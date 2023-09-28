@@ -2,7 +2,10 @@
 
 授業の可視化ツールです。
 
+## アイコンについて
+
+プロジェクトのアイコンおよびファビコンは [Tanihara Hiroko]() さんにご制作いただきました。心より感謝申し上げます。
 
 ## ライセンス
 
-GPLv3
+GNU General Public License Version 3
