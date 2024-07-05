@@ -81,6 +81,10 @@ export class InputmoreComponent {
     }
   }
 
+  onInput(event: Event): void {
+    console.log(event);
+  }
+
   openSnackBar(message: string, action: string): void {
     this.matSnackBar.open(message, action);
   }
