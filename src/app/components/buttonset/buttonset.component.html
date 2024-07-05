@@ -1,23 +1,7 @@
 <mat-grid-list class="grid-list" cols="2" rowHeight="fit">
     <mat-grid-tile *ngFor="let button of buttonNames">
-        <mat-card class="button-card" matRipple (click)="onClickButton($event, button)">
-            <mat-card-header>
-                <mat-card-title>
-                </mat-card-title>
-                <mat-card-subtitle>
-                </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content class="button-content">
-                <div class="button-text">
-                    {{button}}
-                </div>
-            </mat-card-content>
-            <mat-card-actions>
-            </mat-card-actions>
-            <mat-card-footer>
-                <mat-progress-bar
-                    [mode]="buttonsetState.get(button)?.started ? 'indeterminate' : 'determinate'"></mat-progress-bar>
-            </mat-card-footer>
-        </mat-card>
+
+        <app-button [name]=" button" (clickButton)="onClickButton($event)"></app-button>
+
     </mat-grid-tile>
 </mat-grid-list>

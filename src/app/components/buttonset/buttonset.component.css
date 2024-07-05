@@ -2,19 +2,3 @@
     width: 100%;
     height: 100vh;
 }
-
-.button-card {
-    width: 90%;
-    height: 90%;
-}
-
-.button-content {
-    flex: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.button-text {
-    font-size: 1em;
-}

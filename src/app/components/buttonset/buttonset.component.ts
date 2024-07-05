@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 
 import { Event } from '../../services/recorder.service';
+import { ClickButton } from '../button/button.component';
 
 
 /** コンポーネント外部に送出するイベントの引数 */
@@ -69,7 +70,9 @@ export class ButtonsetComponent implements OnDestroy {
    * @param {UIEvent} event - DOMのイベントオブジェクト
    * @param {string} button - クリックされたボタンの名前 
    */
-  public onClickButton(event: UIEvent, button: string): void {
+  public onClickButton(event: ClickButton): void {
+    const button = event.name;
+
     // 現在時刻
     const now = Date.now();
 

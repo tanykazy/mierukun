@@ -31,13 +31,15 @@ import { ButtonsetComponent } from './components/buttonset/buttonset.component';
 import { InputmoreComponent } from './components/inputmore/inputmore.component';
 // 黒板面積グラフを表示するためのコンポーネント
 import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
+import { ButtonComponent } from './components/button/button.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ButtonsetComponent,
     InputmoreComponent,
-    KokubanChartComponent
+    KokubanChartComponent,
+    ButtonComponent,
   ],
   imports: [
     BrowserModule,
