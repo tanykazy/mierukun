@@ -2,9 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
+import { RecorderService } from 'src/app/services/recorder.service'
 
 @Component({
   selector: 'app-inputmore',
@@ -13,9 +15,12 @@ import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 })
 export class InputmoreComponent {
   constructor(
+    private recorder: RecorderService,
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
   ) { }
+
+  recordeAudio: boolean = false;
 
   @Input() label!: string;
   @Input() placeholder!: string;
@@ -78,6 +83,14 @@ export class InputmoreComponent {
       } else {
         this.openSnackBar('Failed to copy.', 'OK');
       }
+    }
+  }
+
+  onChangeRecordAudio(event: MatSlideToggleChange): void {
+    if (event.checked) {
+      this.recorder.enableAudio();
+    } else {
+      this.recorder.disableAudio();
     }
   }
 

@@ -1,0 +1,19 @@
+:host {
+    width: 100%;
+    height: 100%;
+}
+
+.button {
+    width: 90%;
+    height: 90%;
+}
+
+.button-content {
+    flex: auto;
+    display: flex;
+}
+
+.visualizer {
+    width: 100%;
+    height: 100%;
+}

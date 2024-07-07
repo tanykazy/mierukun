@@ -1,3 +1,4 @@
+import { W } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
 
 
@@ -16,6 +17,8 @@ export interface Record {
   kind: string; // 記録の種別
   event: Event; // 記録の発生イベント
   time: number; // 記録発生時刻
+  audio?: Blob; // 記録のオーディオデータ
+  text?: string; // 記録のテキストデータ
 }
 
 /**
@@ -31,10 +34,16 @@ interface Total {
 })
 export class RecorderService {
 
-  constructor() { }
+  constructor() {
+    this.chunks = new Array<Blob>();
+  }
 
   private records = new Array<Record>();
   private total = new Map<string, Total>();
+
+  public stream: MediaStream | undefined;
+  private mediaRecorder!: MediaRecorder;
+  private chunks!: Array<Blob>;
 
   /**
    * イベントを記録する
@@ -58,15 +67,26 @@ export class RecorderService {
     switch (data.event) {
       case 'START':
         total.lastTime = data.time;
+
+        if (this.stream) {
+          this.startRecordAudio();
+        }
         break;
 
       case 'END':
         const time = data.time - total.lastTime;
         total.time = total.time + time;
         total.lastTime = NaN;
+
+        if (this.stream) {
+          this.requestRecordAudio();
+        }
         break;
 
       default:
+        if (this.stream) {
+          this.stopRecordAudio();
+        }
         throw new Error('未定義のイベント');
     }
 
@@ -121,6 +141,70 @@ export class RecorderService {
     });
 
     return new URL(window.URL.createObjectURL(blob));
+  }
+
+  public requestRecordAudio() {
+    if (this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.requestData();
+    }
+  }
+
+  public startRecordAudio() {
+    if (this.mediaRecorder.state === 'inactive') {
+      this.mediaRecorder.start();
+    }
+  }
+
+  public stopRecordAudio() {
+    if (this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+  }
+
+  public enableAudio(): void {
+    const constraints = {
+      audio: true
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        this.stream = stream;
+        this.mediaRecorder = new MediaRecorder(stream);
+
+        this.mediaRecorder.ondataavailable = (event) => {
+          console.log(event);
+          this.chunks.push(event.data);
+
+          let lastRecord;
+          for (let i = this.records.length - 1; i >= 0; i--) {
+            lastRecord = this.records[i];
+            if (lastRecord.event === 'END') {
+              break;
+            }
+          }
+          if (lastRecord) {
+            lastRecord.audio = event.data;
+          }
+          console.log(this.records);
+        };
+
+        this.mediaRecorder.onstop = (event) => {
+          console.log(event);
+          const blob = new Blob(this.chunks, {
+            type: this.mediaRecorder.mimeType
+          });
+          this.chunks = new Array<Blob>();
+          const audioURL = window.URL.createObjectURL(blob);
+          console.log("recorder stopped");
+          console.log(audioURL);
+
+          console.log(this.records);
+        };
+      });
+  }
+
+  public disableAudio(): void {
+    this.stream = undefined;
   }
 }
 

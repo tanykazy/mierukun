@@ -1,6 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 
 import { Event } from '../../services/recorder.service';
+import { ButtonComponent, ClickButton } from '../button/button.component';
 
 
 /** コンポーネント外部に送出するイベントの引数 */
@@ -19,30 +20,11 @@ export interface ClickButtonset {
   styleUrls: ['./buttonset.component.css']
 })
 export class ButtonsetComponent implements OnDestroy {
-  @ViewChild('visualizer') visualizer!: ElementRef;
+  @ViewChildren(ButtonComponent) buttons!: QueryList<ButtonComponent>;
 
   // コンポーネント外部から設定されるボタン名のリスト
   // コンポーネント内部で使用するためにMapに登録する
-  @Input() set buttonset(buttonset: Array<string>) {
-    const keys = this.buttonsetState.keys();
-    for (const key of keys) {
-      if (!buttonset.includes(key)) {
-        this.buttonsetState.delete(key);
-      }
-    }
-    const map = new Map<string, ButtonState>();
-    for (const button of buttonset) {
-      let state = this.buttonsetState.get(button);
-      if (!state) {
-        state = {
-          name: button,
-          started: false
-        };
-      }
-      map.set(button, state);
-    }
-    this.buttonsetState = map;
-  }
+  @Input() buttonset: Array<string> = [];
 
   // ボタンを複数同時に有効化できるか
   @Input() multiple!: boolean;
@@ -50,20 +32,8 @@ export class ButtonsetComponent implements OnDestroy {
   // ボタンが押されたときに発火するイベント
   @Output() clickButtonset = new EventEmitter<ClickButtonset>();
 
-  // コンポーネント内部で使用するボタンの状態管理オブジェクト
-  public buttonsetState = new Map<string, ButtonState>();
-
-
   ngOnDestroy(): void {
     this.deactiveAll();
-  }
-
-  /**
-   * ボタンの名前を配列で返す
-   * @returns {Array<string>} ボタンの名前リスト
-   */
-  public get buttonNames(): Array<string> {
-    return Array.from(this.buttonsetState.keys());
   }
 
   /**
@@ -71,44 +41,30 @@ export class ButtonsetComponent implements OnDestroy {
    * @param {UIEvent} event - DOMのイベントオブジェクト
    * @param {string} button - クリックされたボタンの名前 
    */
-  public onClickButton(event: UIEvent, button: string): void {
+  public onClickButton(event: ClickButton): void {
     // 現在時刻
     const now = Date.now();
 
-
-
     // 同時に複数のボタンを有効化できない設定の場合、有効化されたボタンを終了する
     if (!this.multiple) {
-      for (const [name, state] of this.buttonsetState) {
-        // クリックされたボタン以外で開始しているボタンを終了
-        if (button !== name && state.started) {
-          state.started = false;
+      this.buttons.forEach((button) => {
+        if (button.name !== event.name && button.state) {
+          button.state = false;
 
           this.clickButtonset.emit({
-            button: name,
+            button: button.name,
             event: 'END',
             time: now
           });
         }
-      }
-    }
-
-    // ボタンの状態管理オブジェクトを取得
-    let buttonState: ButtonState | undefined = this.buttonsetState.get(button);
-
-    if (!buttonState) {
-      throw new Error('未登録のボタンがクリックされた');
-    } else {
-      // 状態管理オブジェクトがある場合
-      // ボタンの状態を反転
-      buttonState.started = !buttonState.started;
-
-      this.clickButtonset.emit({
-        button: buttonState.name,
-        event: buttonState.started ? 'START' : 'END',
-        time: now
       });
     }
+
+    this.clickButtonset.emit({
+      button: event.name,
+      event: event.state ? 'START' : 'END',
+      time: now
+    });
   }
 
   /**
@@ -116,24 +72,16 @@ export class ButtonsetComponent implements OnDestroy {
    */
   public deactiveAll(): void {
     const now = Date.now();
-    for (const [name, state] of this.buttonsetState) {
-      if (state.started) {
-        state.started = false;
+    this.buttons.forEach((button) => {
+      if (button.state) {
+        button.state = false;
 
         this.clickButtonset.emit({
-          button: name,
+          button: button.name,
           event: 'END',
           time: now
         });
       }
-    }
+    });
   }
-}
-
-/** 状態管理オブジェクトのインターフェイス */
-interface ButtonState {
-  // ボタンの名前
-  name: string;
-  // ボタンが有効化しているか
-  started: boolean;
 }

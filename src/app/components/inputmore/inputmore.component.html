@@ -40,6 +40,19 @@
     </mat-card-header>
 
     <mat-card-content>
+        <mat-slide-toggle [checked]="recordeAudio" (change)="onChangeRecordAudio($event)">
+            録音
+        </mat-slide-toggle>
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
 
         <mat-form-field class="input-apikey">
             <mat-label>API キー</mat-label>

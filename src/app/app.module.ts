@@ -19,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
@@ -31,13 +32,15 @@ import { ButtonsetComponent } from './components/buttonset/buttonset.component';
 import { InputmoreComponent } from './components/inputmore/inputmore.component';
 // 黒板面積グラフを表示するためのコンポーネント
 import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
+import { ButtonComponent } from './components/button/button.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ButtonsetComponent,
     InputmoreComponent,
-    KokubanChartComponent
+    KokubanChartComponent,
+    ButtonComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,6 +60,7 @@ import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.
     MatSnackBarModule,
     MatStepperModule,
     MatButtonToggleModule,
+    MatSlideToggleModule,
     DragDropModule,
     ClipboardModule,
     MatButtonModule,
