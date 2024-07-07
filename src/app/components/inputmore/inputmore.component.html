@@ -56,9 +56,11 @@
 
         <mat-form-field class="input-apikey">
             <mat-label>API キー</mat-label>
-            <input matInput placeholder="Gemini API キーを入力する" (input)="onInput($event)">
+            <input matInput placeholder="Gemini API キーを入力する" (input)="onInput($event)" [(ngModel)]="apikey">
             <mat-hint></mat-hint>
         </mat-form-field>
+
+        <button mat-button (click)="onClickButton($event)">Test</button>
 
     </mat-card-content>
 </mat-card>
