@@ -5,6 +5,8 @@ import { RecorderService } from './services/recorder.service';
 
 export const SEARCHPARAM_KEY_BUTTON = 'b';
 
+// let apiLoaded: boolean = false;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,6 +19,22 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     window.addEventListener('beforeunload', this.onBeforeunload);
+
+    // if (!apiLoaded) {
+    //   // https://github.com/google/google-api-javascript-client/blob/master/docs/start.md
+    //   const scriptElement: HTMLScriptElement = document.createElement('script');
+    //   scriptElement.src = 'https://apis.google.com/js/api.js';
+    //   scriptElement.onload = (event: Event) => {
+    //     apiLoaded = true;
+    //     console.info('Load API %s', scriptElement.src);
+    //   };
+    //   scriptElement.onerror = (event: string | Event) => {
+    //     console.error('Fail to load API %s', scriptElement);
+    //   };
+    //   document.body.appendChild(scriptElement);
+    // } else {
+    //   console.debug('API loaded.');
+    // }
 
     const url = new URL(document.location.href);
     if (url.searchParams.has(SEARCHPARAM_KEY_BUTTON)) {

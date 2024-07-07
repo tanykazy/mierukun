@@ -30,6 +30,7 @@
     "@angular-devkit/build-angular": "^17.3.8",
     "@angular/cli": "~17.3.8",
     "@angular/compiler-cli": "^17.3.11",
+    "@types/gapi": "^0.0.47",
     "@types/jasmine": "~4.3.0",
     "http-server": "^14.1.1",
     "jasmine-core": "~4.5.0",

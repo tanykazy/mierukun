@@ -15,7 +15,9 @@ export class InputmoreComponent {
   constructor(
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
-  ) { }
+  ) {
+    this.apikey = window.localStorage.getItem('API_KEY') || '';
+  }
 
   @Input() label!: string;
   @Input() placeholder!: string;
@@ -25,6 +27,8 @@ export class InputmoreComponent {
 
   readonly addOnBlur: boolean = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  apikey: string;
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -81,11 +85,35 @@ export class InputmoreComponent {
     }
   }
 
-  onInput(event: Event): void {
-    console.log(event);
-  }
-
   openSnackBar(message: string, action: string): void {
     this.matSnackBar.open(message, action);
+  }
+
+  onInput(event: Event): void {
+    window.localStorage.setItem('API_KEY', (event.target as HTMLInputElement).value);
+  }
+
+  async onClickButton(event: Event): Promise<void> {
+    if (this.apikey) {
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${this.apikey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+
+          contents: [{
+            role: 'user',
+            parts: [{
+              text: '学習について教えてください。'
+            }]
+          }]
+        })
+      })
+
+      console.log(response.json());
+
+    }
   }
 }
