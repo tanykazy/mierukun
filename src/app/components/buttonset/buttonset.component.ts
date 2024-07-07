@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { Event } from '../../services/recorder.service';
 
@@ -19,6 +19,8 @@ export interface ClickButtonset {
   styleUrls: ['./buttonset.component.css']
 })
 export class ButtonsetComponent implements OnDestroy {
+  @ViewChild('visualizer') visualizer!: ElementRef;
+
   // コンポーネント外部から設定されるボタン名のリスト
   // コンポーネント内部で使用するためにMapに登録する
   @Input() set buttonset(buttonset: Array<string>) {
@@ -72,6 +74,8 @@ export class ButtonsetComponent implements OnDestroy {
   public onClickButton(event: UIEvent, button: string): void {
     // 現在時刻
     const now = Date.now();
+
+
 
     // 同時に複数のボタンを有効化できない設定の場合、有効化されたボタンを終了する
     if (!this.multiple) {
