@@ -1,5 +1,5 @@
-import { W } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
+import { GeminiService } from './gemini.service';
 
 
 /**
@@ -34,7 +34,9 @@ interface Total {
 })
 export class RecorderService {
 
-  constructor() {
+  constructor(
+    private geminiService: GeminiService
+  ) {
     this.chunks = new Array<Blob>();
   }
 
@@ -166,14 +168,30 @@ export class RecorderService {
       audio: true
     };
 
+    // const mimeType = 'audio/ogg';
+    // console.log(MediaRecorder.isTypeSupported(mimeType));
+
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
         this.stream = stream;
         this.mediaRecorder = new MediaRecorder(stream);
 
-        this.mediaRecorder.ondataavailable = (event) => {
+        this.mediaRecorder.ondataavailable = async (event) => {
           console.log(event);
           this.chunks.push(event.data);
+
+          const blob = new Blob(this.chunks, {
+            // type: 'audio/mpeg'
+            type: this.mediaRecorder.mimeType
+          });
+          this.chunks = new Array<Blob>();
+
+          const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
+            await blobToGenerativePart(blob, 'audio/mpeg'), {
+              text: 'なんの音？'
+            }
+          ]);
+          console.log(response);
 
           let lastRecord;
           for (let i = this.records.length - 1; i >= 0; i--) {
@@ -222,4 +240,19 @@ function json2csv(json: Array<Record>, delimiter: ',' | '\t'): string {
     }).join(delimiter);
   }).join('\n');
   return header + body;
+}
+
+// Converts a Blob object to a GoogleGenerativeAI.Part object.
+async function blobToGenerativePart(blob: Blob, mimeType: string) {
+  const base64EncodedDataPromise = new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
+    reader.readAsDataURL(blob);
+  });
+  return {
+    inlineData: {
+      data: await base64EncodedDataPromise,
+      mimeType: mimeType
+    },
+  };
 }
