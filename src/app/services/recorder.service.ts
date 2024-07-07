@@ -181,14 +181,14 @@ export class RecorderService {
           this.chunks.push(event.data);
 
           const blob = new Blob(this.chunks, {
-            // type: 'audio/mpeg'
             type: this.mediaRecorder.mimeType
           });
-          this.chunks = new Array<Blob>();
+
+          // this.chunks = new Array<Blob>();
 
           const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
             await blobToGenerativePart(blob, 'audio/mpeg'), {
-              text: 'なんの音？'
+              text: '会話の内容を文字起こししてください。'
             }
           ]);
           console.log(response);
