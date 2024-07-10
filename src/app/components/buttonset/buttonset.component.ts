@@ -112,23 +112,26 @@ export class ButtonsetComponent implements OnDestroy {
     const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
       await GeminiService.blobToGenerativePart(blob, 'audio/mpeg'), {
         // text: '会話の内容をまとめてください。'
-        // text: '会話を文字起こししてください。'
-        text: '会話の概要をまとめてください。'
+        text: '会話を文字起こししてください。'
+        // text: '会話の概要をまとめてください。'
       }
     ]);
     console.log(response);
-    console.log(response.candidates[0].content.parts[0].text);
 
-    // let lastRecord;
-    // for (let i = this.records.length - 1; i >= 0; i--) {
-    //   lastRecord = this.records[i];
-    //   if (lastRecord.event === 'END') {
-    //     break;
-    //   }
-    // }
-    // if (lastRecord) {
-    //   lastRecord.audio = blob;
-    // }
-    // console.log(this.records);
+    const text = response.candidates[0].content.parts[0].text;
+    console.log(text);
+
+    let lastRecord;
+    for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
+      lastRecord = this.recorderService.records[i];
+      if (lastRecord.event === 'END') {
+        break;
+      }
+    }
+    if (lastRecord) {
+      lastRecord.audio = blob;
+      lastRecord.text = text;
+    }
+    // console.log(this.recorderService.records);
   }
 }

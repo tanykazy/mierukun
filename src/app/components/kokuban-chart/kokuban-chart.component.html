@@ -44,14 +44,13 @@
     <mat-card>
         <mat-card-header>
             <mat-card-title>
+                {{record.kind}}
             </mat-card-title>
             <mat-card-subtitle>
+                {{record.start.toLocaleTimeString()}} - {{record.end.toLocaleTimeString()}}
             </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            {{record.time.toLocaleTimeString()}}
-            {{record.kind}}
-            {{record.event}}
             {{record.text}}
         </mat-card-content>
         <mat-card-actions>

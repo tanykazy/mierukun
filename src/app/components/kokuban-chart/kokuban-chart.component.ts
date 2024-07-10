@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, Input, OnChanges, AfterContentChec
 import { Observable, of, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { RecorderService } from '../../services/recorder.service';
+import { RecorderService, RecordView } from '../../services/recorder.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 declare const google: any;
@@ -25,7 +25,7 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
   @ViewChild('chart_aria') chartAria!: ElementRef;
 
   public chartType: ChartType = 'PieChart';
-  public records: Array<any>;
+  public records: Array<RecordView>;
 
   private readonly chartaria = 'chart-aria';
   private dataTable = new Map<string, number>();
@@ -50,7 +50,7 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
     const total = this.recorder.getAllTotal();
     this.dataTable = total;
 
-    this.records = this.recorder.getAllRecords();
+    this.records = this.recorder.getAllRecordView();
   }
 
   /**

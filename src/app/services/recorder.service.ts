@@ -1,3 +1,4 @@
+import { W } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
 
 /**
@@ -15,6 +16,14 @@ export interface Record {
   kind: string; // 記録の種別
   event: Event; // 記録の発生イベント
   time: Date; // 記録発生時刻
+  audio?: Blob; // 記録のオーディオデータ
+  text?: string; // 記録のテキストデータ
+}
+
+export interface RecordView {
+  kind: string; // 記録の種別
+  start: Date; // 記録発生時刻
+  end: Date; // 記録発生時刻
   audio?: Blob; // 記録のオーディオデータ
   text?: string; // 記録のテキストデータ
 }
@@ -37,7 +46,7 @@ export class RecorderService {
     this.grade = 0;
   }
 
-  private audio = new Array<Blob>();
+  // private audio = new Array<Blob>();
   public records = new Array<Record>();
   private total = new Map<string, Total>();
   public grade: number;
@@ -118,18 +127,23 @@ export class RecorderService {
     return all;
   }
 
-  public getAllRecords(): Array<object> {
-    const all = new Array<object>;
-    for (const record of this.records) {
-      all.push({
-        kind: record.kind,
-        event: record.event,
-        time: record.time,
-        audio: record.audio,
-        text: record.text
-      });
+  public getAllRecordView(): Array<RecordView> {
+    const recordView = new Array<RecordView>();
+    for (let i = 0; i < this.records.length; i++) {
+      if (this.records[i].event === 'START') {
+        if (this.records[i].kind === this.records[i + 1].kind
+          && this.records[i + 1].event === 'END') {
+          recordView.push({
+            kind: this.records[i].kind,
+            start: this.records[i].time,
+            end: this.records[i + 1].time,
+            audio: this.records[i + 1].audio,
+            text: this.records[i + 1].text
+          });
+        }
+      }
     }
-    return all;
+    return recordView;
   }
 
   /**
@@ -188,20 +202,20 @@ export class RecorderService {
         type: this.mediaRecorder.mimeType
       });
       this.chunks = new Array<Blob>();
-      this.audio.push(blob);
+      // this.audio.push(blob);
 
       handler(blob);
 
-      let lastRecord;
-      for (let i = this.records.length - 1; i >= 0; i--) {
-        lastRecord = this.records[i];
-        if (lastRecord.event === 'END') {
-          break;
-        }
-      }
-      if (lastRecord) {
-        lastRecord.audio = blob;
-      }
+      // let lastRecord;
+      // for (let i = this.records.length - 1; i >= 0; i--) {
+      //   lastRecord = this.records[i];
+      //   if (lastRecord.event === 'END') {
+      //     break;
+      //   }
+      // }
+      // if (lastRecord) {
+      //   lastRecord.audio = blob;
+      // }
       // console.log(this.records);
     };
 
