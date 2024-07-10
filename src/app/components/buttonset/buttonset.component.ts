@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 
-import { Event } from '../../services/recorder.service';
+import { GeminiService } from '../../services/gemini.service';
+import { RecorderService, Event } from '../../services/recorder.service';
 import { ButtonComponent, ClickButton } from '../button/button.component';
 
 
@@ -11,7 +12,7 @@ export interface ClickButtonset {
   // イベント種別
   event: Event;
   // イベント発生時間 Date.now() の返値
-  time: number;
+  time: Date;
 }
 
 @Component({
@@ -20,6 +21,17 @@ export interface ClickButtonset {
   styleUrls: ['./buttonset.component.css']
 })
 export class ButtonsetComponent implements OnDestroy {
+  constructor(
+    private geminiService: GeminiService,
+    private recorderService: RecorderService
+  ) {
+    this.chunks = new Array<Blob>();
+  }
+
+  public stream: MediaStream | undefined;
+  private mediaRecorder!: MediaRecorder;
+  private chunks!: Array<Blob>;
+
   @ViewChildren(ButtonComponent) buttons!: QueryList<ButtonComponent>;
 
   // コンポーネント外部から設定されるボタン名のリスト
@@ -43,7 +55,7 @@ export class ButtonsetComponent implements OnDestroy {
    */
   public onClickButton(event: ClickButton): void {
     // 現在時刻
-    const now = Date.now();
+    const now = new Date();
 
     // 同時に複数のボタンを有効化できない設定の場合、有効化されたボタンを終了する
     if (!this.multiple) {
@@ -56,6 +68,8 @@ export class ButtonsetComponent implements OnDestroy {
             event: 'END',
             time: now
           });
+
+          this.recorderService.stopRecordAudio();
         }
       });
     }
@@ -65,13 +79,19 @@ export class ButtonsetComponent implements OnDestroy {
       event: event.state ? 'START' : 'END',
       time: now
     });
+
+    if (event.state) {
+      this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
+    } else {
+      this.recorderService.stopRecordAudio();
+    }
   }
 
   /**
    * すべてのボタンをOFFにする
    */
   public deactiveAll(): void {
-    const now = Date.now();
+    const now = new Date();
     this.buttons.forEach((button) => {
       if (button.state) {
         button.state = false;
@@ -83,5 +103,32 @@ export class ButtonsetComponent implements OnDestroy {
         });
       }
     });
+
+    this.recorderService.stopRecordAudio();
+  }
+
+  private async stopRecorderHandler(blob: Blob): Promise<void> {
+    // console.log(blob);
+    const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
+      await GeminiService.blobToGenerativePart(blob, 'audio/mpeg'), {
+        // text: '会話の内容をまとめてください。'
+        // text: '会話を文字起こししてください。'
+        text: '会話の概要をまとめてください。'
+      }
+    ]);
+    console.log(response);
+    console.log(response.candidates[0].content.parts[0].text);
+
+    // let lastRecord;
+    // for (let i = this.records.length - 1; i >= 0; i--) {
+    //   lastRecord = this.records[i];
+    //   if (lastRecord.event === 'END') {
+    //     break;
+    //   }
+    // }
+    // if (lastRecord) {
+    //   lastRecord.audio = blob;
+    // }
+    // console.log(this.records);
   }
 }

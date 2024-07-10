@@ -18,11 +18,14 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
   constructor(
     private scriptLoader: ScriptLoaderService,
     private recorder: RecorderService
-  ) { }
+  ) {
+    this.records = [];
+  }
 
   @ViewChild('chart_aria') chartAria!: ElementRef;
 
-  public chartType: ChartType = 'Treemap';
+  public chartType: ChartType = 'PieChart';
+  public records: Array<any>;
 
   private readonly chartaria = 'chart-aria';
   private dataTable = new Map<string, number>();
@@ -46,6 +49,8 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
   ngAfterContentChecked(): void {
     const total = this.recorder.getAllTotal();
     this.dataTable = total;
+
+    this.records = this.recorder.getAllRecords();
   }
 
   /**
@@ -75,9 +80,12 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
   public onClickDownloadCSV(event: UIEvent): void {
     const url = this.recorder.export2csv();
     if (url) {
+      const now = new Date();
+      const name = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')} ${this.recorder.grade.toString().padStart(2, '0')}${this.recorder.subject || ''}`;
+
       const a = document.createElement('a');
       a.href = url.href;
-      a.download = Date.now() + '.csv';
+      a.download = `${name}.csv`;
       a.click();
     }
   }

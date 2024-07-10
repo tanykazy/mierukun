@@ -1,12 +1,49 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title></mat-card-title>
+        <mat-card-title>基本情報</mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
+        <mat-form-field class="full-width-field">
+            <mat-label>対象の学年</mat-label>
+            <mat-select name="grade" [(ngModel)]="grade" (selectionChange)="onChangeGrade($event)">
+                <mat-option value="1">小1</mat-option>
+                <mat-option value="2">小2</mat-option>
+                <mat-option value="3">小3</mat-option>
+                <mat-option value="4">小4</mat-option>
+                <mat-option value="5">小5</mat-option>
+                <mat-option value="6">小6</mat-option>
+                <mat-option value="7">中1</mat-option>
+                <mat-option value="8">中2</mat-option>
+                <mat-option value="9">中3</mat-option>
+                <mat-option value="10">高1</mat-option>
+                <mat-option value="11">高2</mat-option>
+                <mat-option value="12">高3</mat-option>
+                <mat-option value="0">その他</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-        <mat-form-field class="chip-list">
+        <mat-form-field class="full-width-field">
+            <mat-label>教科</mat-label>
+            <input matInput placeholder="" (input)="onInputSubject($event)" [(ngModel)]="subject">
+        </mat-form-field>
+
+        <mat-form-field class="full-width-field">
+            <mat-label>Note</mat-label>
+            <textarea matInput></textarea>
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>みとりの視点</mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <mat-form-field class="full-width-field">
             <mat-label>{{label}}</mat-label>
             <mat-chip-grid #chipGrid cdkDropList [cdkDropListAutoScrollDisabled]="true"
                 cdkDropListOrientation="vertical" (cdkDropListDropped)="drop($event)">
@@ -22,8 +59,6 @@
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
                 (matChipInputTokenEnd)="add($event)" />
         </mat-form-field>
-
-
     </mat-card-content>
 
     <mat-card-actions align="end">
@@ -35,32 +70,23 @@
 
 <mat-card>
     <mat-card-header>
-        <mat-card-title></mat-card-title>
+        <mat-card-title>録音設定</mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-        <mat-slide-toggle [checked]="recordeAudio" (change)="onChangeRecordAudio($event)">
-            録音
-        </mat-slide-toggle>
-    </mat-card-content>
-</mat-card>
-
-<mat-card>
-    <mat-card-header>
-        <mat-card-title></mat-card-title>
-        <mat-card-subtitle></mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-
         <mat-form-field class="input-apikey">
-            <mat-label>API キー</mat-label>
-            <input matInput placeholder="Gemini API キーを入力する" (input)="onInput($event)" [(ngModel)]="apikey">
+            <mat-label>Gemini API キー</mat-label>
+            <input matInput type="password" placeholder="Gemini API キーを入力する" (input)="onInputApikey($event)"
+                [(ngModel)]="apikey">
             <mat-hint></mat-hint>
         </mat-form-field>
-
-        <button mat-button (click)="onClickButton($event)">Test</button>
-
     </mat-card-content>
+
+    <mat-card-actions align="end">
+        <mat-slide-toggle [checked]="recordeAudio" [disabled]="apikey.length === 0"
+            (change)="onChangeRecordAudio($event)">
+            録音
+        </mat-slide-toggle>
+    </mat-card-actions>
 </mat-card>

@@ -4,7 +4,7 @@ import { RecorderService } from '../../services/recorder.service';
 export interface ClickButton {
   name: string;
   state: boolean;
-  time: number;
+  time: Date;
   button: ButtonComponent;
 }
 
@@ -118,7 +118,7 @@ export class ButtonComponent implements AfterViewInit {
   public onClick(event: UIEvent): void {
     console.debug(event);
 
-    const now = Date.now();
+    const now = new Date();
 
     this.toggleState();
 

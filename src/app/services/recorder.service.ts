@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { GeminiService } from './gemini.service';
-
 
 /**
  * 記録の発生イベント
@@ -16,7 +14,7 @@ export type Event = 'START' | 'END';
 export interface Record {
   kind: string; // 記録の種別
   event: Event; // 記録の発生イベント
-  time: number; // 記録発生時刻
+  time: Date; // 記録発生時刻
   audio?: Blob; // 記録のオーディオデータ
   text?: string; // 記録のテキストデータ
 }
@@ -33,16 +31,19 @@ interface Total {
   providedIn: 'root'
 })
 export class RecorderService {
-
-  constructor(
-    private geminiService: GeminiService
-  ) {
+  constructor() {
+    this.isAudioAvailable = false;
     this.chunks = new Array<Blob>();
+    this.grade = 0;
   }
 
-  private records = new Array<Record>();
+  private audio = new Array<Blob>();
+  public records = new Array<Record>();
   private total = new Map<string, Total>();
+  public grade: number;
+  public subject!: string;
 
+  public isAudioAvailable: boolean;
   public stream: MediaStream | undefined;
   private mediaRecorder!: MediaRecorder;
   private chunks!: Array<Blob>;
@@ -68,27 +69,18 @@ export class RecorderService {
     // イベントに応じて合計時間を計算する
     switch (data.event) {
       case 'START':
-        total.lastTime = data.time;
+        total.lastTime = data.time.getTime();
 
-        if (this.stream) {
-          this.startRecordAudio();
-        }
         break;
 
       case 'END':
-        const time = data.time - total.lastTime;
+        const time = data.time.getTime() - total.lastTime;
         total.time = total.time + time;
         total.lastTime = NaN;
 
-        if (this.stream) {
-          this.requestRecordAudio();
-        }
         break;
 
       default:
-        if (this.stream) {
-          this.stopRecordAudio();
-        }
         throw new Error('未定義のイベント');
     }
 
@@ -126,12 +118,27 @@ export class RecorderService {
     return all;
   }
 
+  public getAllRecords(): Array<object> {
+    const all = new Array<object>;
+    for (const record of this.records) {
+      all.push({
+        kind: record.kind,
+        event: record.event,
+        time: record.time,
+        audio: record.audio,
+        text: record.text
+      });
+    }
+    return all;
+  }
+
   /**
    * csvフォーマットで書き出す
    * @returns {URL|undefined} csvデータのURL
    */
   public export2csv(): URL | undefined {
     if (this.records.length === 0) {
+      console.error('記録がありません');
       return;
     }
 
@@ -146,18 +153,72 @@ export class RecorderService {
   }
 
   public requestRecordAudio() {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
     if (this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.requestData();
     }
   }
 
-  public startRecordAudio() {
+  public startRecordAudio(handler: (blob: Blob) => void) {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
+    this.mediaRecorder = new MediaRecorder(this.stream);
+
+    this.mediaRecorder.ondataavailable = async (event: BlobEvent) => {
+      // console.log(event);
+      this.chunks.push(event.data);
+    };
+
+    this.mediaRecorder.onstop = async (event) => {
+      // console.log(event);
+      const blob = new Blob(this.chunks, {
+        type: this.mediaRecorder.mimeType
+      });
+      this.chunks = new Array<Blob>();
+      this.audio.push(blob);
+
+      handler(blob);
+
+      let lastRecord;
+      for (let i = this.records.length - 1; i >= 0; i--) {
+        lastRecord = this.records[i];
+        if (lastRecord.event === 'END') {
+          break;
+        }
+      }
+      if (lastRecord) {
+        lastRecord.audio = blob;
+      }
+      // console.log(this.records);
+    };
+
     if (this.mediaRecorder.state === 'inactive') {
       this.mediaRecorder.start();
     }
   }
 
   public stopRecordAudio() {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
     if (this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stop();
     }
@@ -168,61 +229,17 @@ export class RecorderService {
       audio: true
     };
 
-    // const mimeType = 'audio/ogg';
-    // console.log(MediaRecorder.isTypeSupported(mimeType));
-
     navigator.mediaDevices.getUserMedia(constraints)
-      .then((stream) => {
+      .then((stream: MediaStream) => {
         this.stream = stream;
-        this.mediaRecorder = new MediaRecorder(stream);
-
-        this.mediaRecorder.ondataavailable = async (event) => {
-          console.log(event);
-          this.chunks.push(event.data);
-
-          const blob = new Blob(this.chunks, {
-            type: this.mediaRecorder.mimeType
-          });
-
-          // this.chunks = new Array<Blob>();
-
-          const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
-            await blobToGenerativePart(blob, 'audio/mpeg'), {
-              text: '会話の内容を文字起こししてください。'
-            }
-          ]);
-          console.log(response);
-
-          let lastRecord;
-          for (let i = this.records.length - 1; i >= 0; i--) {
-            lastRecord = this.records[i];
-            if (lastRecord.event === 'END') {
-              break;
-            }
-          }
-          if (lastRecord) {
-            lastRecord.audio = event.data;
-          }
-          console.log(this.records);
-        };
-
-        this.mediaRecorder.onstop = (event) => {
-          console.log(event);
-          const blob = new Blob(this.chunks, {
-            type: this.mediaRecorder.mimeType
-          });
-          this.chunks = new Array<Blob>();
-          const audioURL = window.URL.createObjectURL(blob);
-          console.log("recorder stopped");
-          console.log(audioURL);
-
-          console.log(this.records);
-        };
       });
+
+    this.isAudioAvailable = true;
   }
 
   public disableAudio(): void {
     this.stream = undefined;
+    this.isAudioAvailable = false;
   }
 }
 
@@ -240,19 +257,4 @@ function json2csv(json: Array<Record>, delimiter: ',' | '\t'): string {
     }).join(delimiter);
   }).join('\n');
   return header + body;
-}
-
-// Converts a Blob object to a GoogleGenerativeAI.Part object.
-async function blobToGenerativePart(blob: Blob, mimeType: string) {
-  const base64EncodedDataPromise = new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
-    reader.readAsDataURL(blob);
-  });
-  return {
-    inlineData: {
-      data: await base64EncodedDataPromise,
-      mimeType: mimeType
-    },
-  };
 }

@@ -7,6 +7,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 import { RecorderService } from 'src/app/services/recorder.service'
+import { MatOption } from '@angular/material/core';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-inputmore',
@@ -15,13 +17,15 @@ import { RecorderService } from 'src/app/services/recorder.service'
 })
 export class InputmoreComponent {
   constructor(
-    private recorder: RecorderService,
+    private recorderService: RecorderService,
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
   ) {
     this.apikey = window.localStorage.getItem('API_KEY') || '';
   }
 
+  grade!: MatOption;
+  subject!: string;
   recordeAudio: boolean = false;
 
   @Input() label!: string;
@@ -92,41 +96,29 @@ export class InputmoreComponent {
 
   onChangeRecordAudio(event: MatSlideToggleChange): void {
     if (event.checked) {
-      this.recorder.enableAudio();
+      this.recorderService.enableAudio();
     } else {
-      this.recorder.disableAudio();
+      this.recorderService.disableAudio();
     }
+  }
+
+  onInputApikey(event: Event): void {
+    if ((event.target as HTMLInputElement).value.length === 0) {
+      this.recordeAudio = false;
+    }
+
+    window.localStorage.setItem('API_KEY', (event.target as HTMLInputElement).value);
+  }
+
+  onInputSubject(event: Event): void {
+    this.recorderService.subject = (event.target as HTMLInputElement).value;
+  }
+
+  onChangeGrade(event: MatSelectChange): void {
+    this.recorderService.grade = event.value;
   }
 
   openSnackBar(message: string, action: string): void {
     this.matSnackBar.open(message, action);
-  }
-
-  onInput(event: Event): void {
-    window.localStorage.setItem('API_KEY', (event.target as HTMLInputElement).value);
-  }
-
-  async onClickButton(event: Event): Promise<void> {
-    if (this.apikey) {
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${this.apikey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-
-          contents: [{
-            role: 'user',
-            parts: [{
-              text: '学習について教えてください。'
-            }]
-          }]
-        })
-      })
-
-      console.log(response.json());
-
-    }
   }
 }
