@@ -36,7 +36,7 @@ export class ButtonComponent implements AfterViewInit {
     if (this.recorder.stream) {
       this.canvasCtx = this.visualizer.nativeElement.getContext('2d');
 
-      this.visualize(this.recorder.stream);
+      // this.visualize(this.recorder.stream);
     }
 
     // window.onresize = () => {
@@ -73,10 +73,14 @@ export class ButtonComponent implements AfterViewInit {
     source.connect(this.analyser);
 
     const draw = () => {
+      if (!this.state) {
+        window.cancelAnimationFrame(this.requestAnimationFrameId);
+        return;
+      }
       const WIDTH = this.visualizer.nativeElement.width;
       const HEIGHT = this.visualizer.nativeElement.height;
 
-      this.requestAnimationFrameId = requestAnimationFrame(draw);
+      this.requestAnimationFrameId = window.requestAnimationFrame(draw);
 
       this.analyser.getByteTimeDomainData(this.dataArray);
 
@@ -121,6 +125,11 @@ export class ButtonComponent implements AfterViewInit {
     const now = new Date();
 
     this.toggleState();
+    if (this.state) {
+      if (this.recorder.stream) {
+        this.visualize(this.recorder.stream);
+      }
+    }
 
     this.clickButton.emit({
       name: this.name,

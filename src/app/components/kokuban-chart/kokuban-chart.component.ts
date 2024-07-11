@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnChanges, AfterContentChecked, SimpleChanges, ViewChild, Inject, Injectable, LOCALE_ID, NgZone } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild, Inject, Injectable, LOCALE_ID, NgZone } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -14,7 +14,8 @@ type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
   templateUrl: './kokuban-chart.component.html',
   styleUrls: ['./kokuban-chart.component.css']
 })
-export class KokubanChartComponent implements OnChanges, AfterContentChecked {
+// export class KokubanChartComponent implements OnChanges, AfterContentChecked {
+export class KokubanChartComponent implements OnChanges {
   constructor(
     private scriptLoader: ScriptLoaderService,
     private recorder: RecorderService
@@ -44,13 +45,30 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.switchChartType(this.chartType);
-  }
 
-  ngAfterContentChecked(): void {
     const total = this.recorder.getAllTotal();
     this.dataTable = total;
 
     this.records = this.recorder.getAllRecordView();
+  }
+
+  // ngAfterContentChecked(): void {
+  // const total = this.recorder.getAllTotal();
+  // this.dataTable = total;
+
+  // this.records = this.recorder.getAllRecordView();
+  // }
+
+  onClickDownloadAudio(event: UIEvent, record: RecordView): void {
+    if (record.audio) {
+      const uri = window.URL.createObjectURL(record.audio as Blob);
+      if (uri) {
+        const a = document.createElement('a');
+        a.href = uri;
+        a.download = `${record.start?.toLocaleTimeString()}.mp3`;
+        a.click();
+      }
+    }
   }
 
   /**

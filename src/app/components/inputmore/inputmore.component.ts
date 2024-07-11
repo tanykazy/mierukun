@@ -10,6 +10,8 @@ import { RecorderService } from 'src/app/services/recorder.service'
 import { MatOption } from '@angular/material/core';
 import { MatSelectChange } from '@angular/material/select';
 
+const DEFAULT_PROMPT = '音声から会話を文字起こしして';
+
 @Component({
   selector: 'app-inputmore',
   templateUrl: './inputmore.component.html',
@@ -22,11 +24,15 @@ export class InputmoreComponent {
     private clipboard: Clipboard
   ) {
     this.apikey = window.localStorage.getItem('API_KEY') || '';
+    this.prompt = window.localStorage.getItem('PROMPT') || DEFAULT_PROMPT;
+    window.localStorage.setItem('PROMPT', this.prompt);
   }
 
   grade!: MatOption;
   subject!: string;
   recordeAudio: boolean = false;
+  apikey: string;
+  prompt: string;
 
   @Input() label!: string;
   @Input() placeholder!: string;
@@ -36,8 +42,6 @@ export class InputmoreComponent {
 
   readonly addOnBlur: boolean = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-
-  apikey: string;
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -108,6 +112,10 @@ export class InputmoreComponent {
     }
 
     window.localStorage.setItem('API_KEY', (event.target as HTMLInputElement).value);
+  }
+
+  onInputPrompt(event: Event): void {
+    window.localStorage.setItem('PROMPT', (event.target as HTMLInputElement).value);
   }
 
   onInputSubject(event: Event): void {

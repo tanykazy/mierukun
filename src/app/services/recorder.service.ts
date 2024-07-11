@@ -25,6 +25,7 @@ export interface RecordView {
   start: Date; // 記録発生時刻
   end: Date; // 記録発生時刻
   audio?: Blob; // 記録のオーディオデータ
+  blobUrl?: string;
   text?: string; // 記録のテキストデータ
 }
 
@@ -133,13 +134,15 @@ export class RecorderService {
       if (this.records[i].event === 'START') {
         if (this.records[i].kind === this.records[i + 1].kind
           && this.records[i + 1].event === 'END') {
-          recordView.push({
+          const view = {
             kind: this.records[i].kind,
             start: this.records[i].time,
             end: this.records[i + 1].time,
             audio: this.records[i + 1].audio,
-            text: this.records[i + 1].text
-          });
+            text: this.records[i + 1].text,
+            blobUrl: this.records[i + 1].audio ? window.URL.createObjectURL(this.records[i + 1].audio as Blob) : undefined,
+          };
+          recordView.push(view);
         }
       }
     }

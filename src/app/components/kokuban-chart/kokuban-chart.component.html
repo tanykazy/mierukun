@@ -53,7 +53,12 @@
         <mat-card-content>
             {{record.text}}
         </mat-card-content>
-        <mat-card-actions>
+        <mat-card-actions align="end">
+            <ng-container *ngIf="record.audio">
+                <audio controls preload="none">
+                    <source [src]="record.blobUrl" type="audio/mpeg" />
+                </audio>
+            </ng-container>
         </mat-card-actions>
     </mat-card>
 </ng-container>
