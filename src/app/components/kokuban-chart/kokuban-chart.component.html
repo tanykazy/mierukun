@@ -56,7 +56,8 @@
         <mat-card-actions align="end">
             <ng-container *ngIf="record.audio">
                 <audio controls preload="none">
-                    <source [src]="record.blobUrl" type="audio/mpeg" />
+                    <source [src]="record.blobUrl" type="audio/webm" />
+                    <a href="record.blobUrl">Download</a>
                 </audio>
             </ng-container>
         </mat-card-actions>

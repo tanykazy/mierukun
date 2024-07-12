@@ -108,20 +108,6 @@ export class ButtonsetComponent implements OnDestroy {
   }
 
   private async stopRecorderHandler(blob: Blob): Promise<void> {
-    // console.log(blob);
-    const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [
-      await GeminiService.blobToGenerativePart(blob, 'audio/mpeg'), {
-        // text: '会話の内容をまとめてください。'
-        // text: '会話を文字起こししてください。'
-        // text: '会話の概要をまとめてください。'
-        text: window.localStorage.getItem('PROMPT'),
-      }
-    ]);
-    console.log(response);
-
-    const text = response.candidates[0].content.parts[0].text;
-    console.log(text);
-
     let lastRecord;
     for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
       lastRecord = this.recorderService.records[i];
@@ -129,6 +115,18 @@ export class ButtonsetComponent implements OnDestroy {
         break;
       }
     }
+
+    const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [{
+      // text: '会話の内容をまとめてください。'
+      // text: '会話を文字起こししてください。'
+      // text: '会話の概要をまとめてください。'
+      text: window.localStorage.getItem('PROMPT'),
+    }, await GeminiService.blobToGenerativePart(blob, 'audio/mpeg')]);
+    console.log(response);
+
+    const text = response.candidates[0].content.parts[0].text;
+    console.log(text);
+
     if (lastRecord) {
       lastRecord.audio = blob;
       lastRecord.text = text;
