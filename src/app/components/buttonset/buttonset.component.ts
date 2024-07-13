@@ -116,11 +116,11 @@ export class ButtonsetComponent implements OnDestroy {
       }
     }
 
+    let prompt = window.localStorage.getItem('PROMPT');
+    prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
+
     const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [{
-      // text: '会話の内容をまとめてください。'
-      // text: '会話を文字起こししてください。'
-      // text: '会話の概要をまとめてください。'
-      text: window.localStorage.getItem('PROMPT'),
+      text: prompt
     }, await GeminiService.blobToGenerativePart(blob, 'audio/mpeg')]);
     console.log(response);
 

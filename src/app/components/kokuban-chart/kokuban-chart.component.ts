@@ -5,6 +5,10 @@ import { switchMap } from 'rxjs/operators';
 import { RecorderService, RecordView } from '../../services/recorder.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
+// import { DomSanitizer } from '@angular/platform-browser';
+// import { marked } from 'marked';
+
+
 declare const google: any;
 
 type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
@@ -17,6 +21,7 @@ type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
 // export class KokubanChartComponent implements OnChanges, AfterContentChecked {
 export class KokubanChartComponent implements OnChanges {
   constructor(
+    // private sanitizer: DomSanitizer,
     private scriptLoader: ScriptLoaderService,
     private recorder: RecorderService
   ) {
@@ -43,13 +48,18 @@ export class KokubanChartComponent implements OnChanges {
     return this.dataTable.size > 0;
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.switchChartType(this.chartType);
 
     const total = this.recorder.getAllTotal();
     this.dataTable = total;
 
-    this.records = this.recorder.getAllRecordView();
+    this.records = await this.recorder.getAllRecordView();
+    // for (const record of this.records) {
+    // const html = await marked(record.text || '') || '';
+    // console.log(html);
+    // record.html = this.sanitizer.bypassSecurityTrustHtml(html);
+    // }
   }
 
   // ngAfterContentChecked(): void {
@@ -268,7 +278,7 @@ function b64_to_utf8(str: string): string {
   providedIn: 'root'
 })
 export class ScriptLoaderService {
-  private readonly scriptSource = 'https://www.gstatic.com/charts/loader.js';
+  private readonly scriptSourceChartsLoader = 'https://www.gstatic.com/charts/loader.js';
   private readonly scriptLoadSubject = new Subject<void>();
 
   constructor(
@@ -357,13 +367,13 @@ export class ScriptLoaderService {
 
   private getGoogleChartsScript(): HTMLScriptElement | undefined {
     const pageScripts = Array.from(document.getElementsByTagName('script'));
-    return pageScripts.find(script => script.src === this.scriptSource);
+    return pageScripts.find(script => script.src === this.scriptSourceChartsLoader);
   }
 
   private createGoogleChartsScript(): HTMLScriptElement {
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = this.scriptSource;
+    script.src = this.scriptSourceChartsLoader;
     script.async = true;
     document.getElementsByTagName('head')[0].appendChild(script);
     return script;

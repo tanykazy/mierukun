@@ -1,5 +1,8 @@
-import { W } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+import { marked } from 'marked';
+
 
 /**
  * 記録の発生イベント
@@ -27,6 +30,7 @@ export interface RecordView {
   audio?: Blob; // 記録のオーディオデータ
   blobUrl?: string;
   text?: string; // 記録のテキストデータ
+  html?: SafeHtml; // 記録のHTMLデータ
 }
 
 /**
@@ -128,7 +132,7 @@ export class RecorderService {
     return all;
   }
 
-  public getAllRecordView(): Array<RecordView> {
+  public async getAllRecordView(): Promise<Array<RecordView>> {
     const recordView = new Array<RecordView>();
     for (let i = 0; i < this.records.length; i++) {
       if (this.records[i].event === 'START') {
@@ -141,6 +145,7 @@ export class RecorderService {
             audio: this.records[i + 1].audio,
             text: this.records[i + 1].text,
             blobUrl: this.records[i + 1].audio ? window.URL.createObjectURL(this.records[i + 1].audio as Blob) : undefined,
+            html: await marked(this.records[i + 1].text || '')
           };
           recordView.push(view);
         }

@@ -50,8 +50,8 @@
                 {{record.start.toLocaleTimeString()}} - {{record.end.toLocaleTimeString()}}
             </mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content>
-            {{record.text}}
+        <mat-card-content [innerHTML]="record.html">
+            <!-- {{record.html}} -->
         </mat-card-content>
         <mat-card-actions align="end">
             <ng-container *ngIf="record.audio">
