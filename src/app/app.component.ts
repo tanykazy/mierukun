@@ -38,9 +38,9 @@ export class AppComponent implements OnInit {
   // app-buttonset コンポーネントへの入力
   // ボタンの文字列の配列
   public buttonset: string[] = [
-    '一斉学習',
-    '個別学習',
-    '協働学習'
+    '説明',
+    'やりとり',
+    '声かけ'
   ];
 
   onSelectionChange(event: StepperSelectionEvent): void {
