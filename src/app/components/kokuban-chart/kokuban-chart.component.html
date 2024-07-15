@@ -1,17 +1,3 @@
-<!-- <div> -->
-<!-- <mat-button-toggle-group [(ngModel)]="chartType" aria-label="Chart Type" (change)="onChangeChartType($event)">
-    <mat-button-toggle value="PieChart">
-        <mat-icon>pie_chart</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="Treemap">
-        <mat-icon>dashboard</mat-icon>
-    </mat-button-toggle>
-    <mat-button-toggle value="ColumnChart">
-        <mat-icon>bar_chart</mat-icon>
-    </mat-button-toggle>
-</mat-button-toggle-group> -->
-<!-- </div> -->
-
 <mat-card>
     <mat-card-header>
         <mat-card-title>
@@ -51,7 +37,7 @@
             </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content [innerHTML]="record.html">
-            <!-- {{record.html}} -->
+            <!-- {{record.text}} -->
         </mat-card-content>
         <mat-card-actions align="end">
             <ng-container *ngIf="record.audio">

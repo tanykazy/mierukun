@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { RecorderService } from '../../services/recorder.service';
 
 export interface ClickButton {
@@ -13,7 +13,7 @@ export interface ClickButton {
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.css']
 })
-export class ButtonComponent implements AfterViewInit {
+export class ButtonComponent {
   constructor(
     private recorder: RecorderService
   ) { }
@@ -32,37 +32,15 @@ export class ButtonComponent implements AfterViewInit {
   dataArray!: Uint8Array;
   requestAnimationFrameId!: number;
 
-  ngAfterViewInit(): void {
+  private visualize(stream: MediaStream) {
     if (this.recorder.stream) {
       this.canvasCtx = this.visualizer.nativeElement.getContext('2d');
-
-      // this.visualize(this.recorder.stream);
     }
 
-    // window.onresize = () => {
-    // this.visualizer.nativeElement.width = mainSection.offsetWidth;
-    // };
-
-    // window.onresize();
-  }
-  // Set up basic variables for app
-  // const record = document.querySelector(".record");
-  // const stop = document.querySelector(".stop");
-  // const soundClips = document.querySelector(".sound-clips");
-  // const canvas = document.querySelector(".visualizer");
-  // const mainSection = document.querySelector(".main-controls");
-
-  // Disable stop button while not recording
-  // stop.disabled = true;
-
-  // Visualiser setup - create web audio api context and canvas
-  // const canvasCtx = canvas.getContext("2d");
-
-  // Main block for doing the audio recording
-  private visualize(stream: MediaStream) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
     }
+
     const source = this.audioCtx.createMediaStreamSource(stream);
 
     this.analyser = this.audioCtx.createAnalyser();
@@ -77,6 +55,7 @@ export class ButtonComponent implements AfterViewInit {
         window.cancelAnimationFrame(this.requestAnimationFrameId);
         return;
       }
+
       const WIDTH = this.visualizer.nativeElement.width;
       const HEIGHT = this.visualizer.nativeElement.height;
 

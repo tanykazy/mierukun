@@ -24,13 +24,7 @@ export class ButtonsetComponent implements OnDestroy {
   constructor(
     private geminiService: GeminiService,
     private recorderService: RecorderService
-  ) {
-    this.chunks = new Array<Blob>();
-  }
-
-  public stream: MediaStream | undefined;
-  private mediaRecorder!: MediaRecorder;
-  private chunks!: Array<Blob>;
+  ) { }
 
   @ViewChildren(ButtonComponent) buttons!: QueryList<ButtonComponent>;
 
@@ -131,6 +125,5 @@ export class ButtonsetComponent implements OnDestroy {
       lastRecord.audio = blob;
       lastRecord.text = text;
     }
-    // console.log(this.recorderService.records);
   }
 }

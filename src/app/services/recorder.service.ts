@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 
 import { marked } from 'marked';
 
@@ -136,18 +136,20 @@ export class RecorderService {
     const recordView = new Array<RecordView>();
     for (let i = 0; i < this.records.length; i++) {
       if (this.records[i].event === 'START') {
-        if (this.records[i].kind === this.records[i + 1].kind
-          && this.records[i + 1].event === 'END') {
-          const view = {
-            kind: this.records[i].kind,
-            start: this.records[i].time,
-            end: this.records[i + 1].time,
-            audio: this.records[i + 1].audio,
-            text: this.records[i + 1].text,
-            blobUrl: this.records[i + 1].audio ? window.URL.createObjectURL(this.records[i + 1].audio as Blob) : undefined,
-            html: await marked(this.records[i + 1].text || '')
-          };
-          recordView.push(view);
+        if (i + 1 < this.records.length) {
+          if (this.records[i].kind === this.records[i + 1].kind
+            && this.records[i + 1].event === 'END') {
+            const view = {
+              kind: this.records[i].kind,
+              start: this.records[i].time,
+              end: this.records[i + 1].time,
+              audio: this.records[i + 1].audio,
+              text: this.records[i + 1].text,
+              blobUrl: this.records[i + 1].audio ? window.URL.createObjectURL(this.records[i + 1].audio as Blob) : undefined,
+              html: await marked(this.records[i + 1].text || '')
+            };
+            recordView.push(view);
+          }
         }
       }
     }
@@ -200,31 +202,17 @@ export class RecorderService {
     this.mediaRecorder = new MediaRecorder(this.stream);
 
     this.mediaRecorder.ondataavailable = async (event: BlobEvent) => {
-      // console.log(event);
       this.chunks.push(event.data);
     };
 
     this.mediaRecorder.onstop = async (event) => {
-      // console.log(event);
       const blob = new Blob(this.chunks, {
         type: this.mediaRecorder.mimeType
       });
+
       this.chunks = new Array<Blob>();
-      // this.audio.push(blob);
 
       handler(blob);
-
-      // let lastRecord;
-      // for (let i = this.records.length - 1; i >= 0; i--) {
-      //   lastRecord = this.records[i];
-      //   if (lastRecord.event === 'END') {
-      //     break;
-      //   }
-      // }
-      // if (lastRecord) {
-      //   lastRecord.audio = blob;
-      // }
-      // console.log(this.records);
     };
 
     if (this.mediaRecorder.state === 'inactive') {

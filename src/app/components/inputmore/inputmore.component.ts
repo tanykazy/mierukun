@@ -10,18 +10,15 @@ import { RecorderService } from 'src/app/services/recorder.service'
 import { MatOption } from '@angular/material/core';
 import { MatSelectChange } from '@angular/material/select';
 
-const DEFAULT_PROMPT = `
-あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
-これから入力される音声は、教師による授業中の発話です。
+const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
+これから入力される音声は、授業中の教師と生徒の発話です。
 観察者は、この時の教師の行動を<<button>>と記録しました。
 
 この音声データを元に、以下の観点で分析し、具体的な行動に基づいたフィードバックを生成してください。
 
 * **発話内容の詳細**: 
     * 教師は授業中、具体的にどのような言葉を発していますか？ 教師の発言を箇条書きで列挙してください。
-    * 各発言の意図は何か？（例：授業の導入、指示、説明、質問、励まし、評価など）
-    * （該当する場合）教師の発言から、児童生徒の反応はどうだったと推測できますか？ （例：興味深そうに聞いていそう、戸惑っている様子 etc.） 
-`;
+    * 各発言の意図は何か？（例：授業の導入、指示、説明、質問、励まし、評価など）`;
 
 @Component({
   selector: 'app-inputmore',

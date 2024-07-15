@@ -26,7 +26,6 @@ enum HarmBlockThreshold {
   providedIn: 'root'
 })
 export class GeminiService {
-
   constructor() { }
 
   private readonly rest = {
@@ -40,7 +39,7 @@ export class GeminiService {
   //   threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH
   // }];
 
-  generateContent(apikey: string, parts: Array<object>) {
+  public generateContent(apikey: string, parts: Array<object>): Promise<any> {
     // console.log(parts);
     // console.log(JSON.stringify({
     //   contents: [{
@@ -56,6 +55,9 @@ export class GeminiService {
     //   }],
     //   safetySettings: this.safetySettings,
     // }));
+    if (!apikey) {
+      throw new Error('APIキーが設定されていません');
+    }
 
     const url = `${this.rest.geminiApi}/${this.rest.modelCode}:${this.rest.generateContent}?key=${apikey}`;
     const response = fetch(url, {
@@ -81,7 +83,7 @@ export class GeminiService {
   }
 
   // Converts a Blob object to a GoogleGenerativeAI.Part object.
-  static async blobToGenerativePart(blob: Blob, mimeType: string) {
+  public static async blobToGenerativePart(blob: Blob, mimeType: string) {
     const base64EncodedDataPromise = new Promise((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve((reader.result as string).split(',')[1]);

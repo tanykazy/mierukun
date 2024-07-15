@@ -5,9 +5,6 @@ import { switchMap } from 'rxjs/operators';
 import { RecorderService, RecordView } from '../../services/recorder.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
-// import { DomSanitizer } from '@angular/platform-browser';
-// import { marked } from 'marked';
-
 
 declare const google: any;
 
@@ -18,10 +15,8 @@ type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
   templateUrl: './kokuban-chart.component.html',
   styleUrls: ['./kokuban-chart.component.css']
 })
-// export class KokubanChartComponent implements OnChanges, AfterContentChecked {
 export class KokubanChartComponent implements OnChanges {
   constructor(
-    // private sanitizer: DomSanitizer,
     private scriptLoader: ScriptLoaderService,
     private recorder: RecorderService
   ) {
@@ -55,19 +50,7 @@ export class KokubanChartComponent implements OnChanges {
     this.dataTable = total;
 
     this.records = await this.recorder.getAllRecordView();
-    // for (const record of this.records) {
-    // const html = await marked(record.text || '') || '';
-    // console.log(html);
-    // record.html = this.sanitizer.bypassSecurityTrustHtml(html);
-    // }
   }
-
-  // ngAfterContentChecked(): void {
-  // const total = this.recorder.getAllTotal();
-  // this.dataTable = total;
-
-  // this.records = this.recorder.getAllRecordView();
-  // }
 
   onClickDownloadAudio(event: UIEvent, record: RecordView): void {
     if (record.audio) {
