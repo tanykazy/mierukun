@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatOption } from '@angular/material/core';
+import { MatSelectChange } from '@angular/material/select';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -7,8 +9,6 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 import { RecorderService } from 'src/app/services/recorder.service'
-import { MatOption } from '@angular/material/core';
-import { MatSelectChange } from '@angular/material/select';
 
 const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
 これから入力される音声は、授業中の教師と生徒の発話です。
