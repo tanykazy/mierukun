@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
+
+import { marked } from 'marked';
 
 
 /**
@@ -15,7 +18,19 @@ export type Event = 'START' | 'END';
 export interface Record {
   kind: string; // 記録の種別
   event: Event; // 記録の発生イベント
-  time: number; // 記録発生時刻
+  time: Date; // 記録発生時刻
+  audio?: Blob; // 記録のオーディオデータ
+  text?: string; // 記録のテキストデータ
+}
+
+export interface RecordView {
+  kind: string; // 記録の種別
+  start: Date; // 記録発生時刻
+  end: Date; // 記録発生時刻
+  audio?: Blob; // 記録のオーディオデータ
+  blobUrl?: string;
+  text?: string; // 記録のテキストデータ
+  html?: SafeHtml; // 記録のHTMLデータ
 }
 
 /**
@@ -30,11 +45,22 @@ interface Total {
   providedIn: 'root'
 })
 export class RecorderService {
+  constructor() {
+    this.isAudioAvailable = false;
+    this.chunks = new Array<Blob>();
+    this.grade = 0;
+  }
 
-  constructor() { }
-
-  private records = new Array<Record>();
+  // private audio = new Array<Blob>();
+  public records = new Array<Record>();
   private total = new Map<string, Total>();
+  public grade: number;
+  public subject!: string;
+
+  public isAudioAvailable: boolean;
+  public stream: MediaStream | undefined;
+  private mediaRecorder!: MediaRecorder;
+  private chunks!: Array<Blob>;
 
   /**
    * イベントを記録する
@@ -57,13 +83,15 @@ export class RecorderService {
     // イベントに応じて合計時間を計算する
     switch (data.event) {
       case 'START':
-        total.lastTime = data.time;
+        total.lastTime = data.time.getTime();
+
         break;
 
       case 'END':
-        const time = data.time - total.lastTime;
+        const time = data.time.getTime() - total.lastTime;
         total.time = total.time + time;
         total.lastTime = NaN;
+
         break;
 
       default:
@@ -104,12 +132,37 @@ export class RecorderService {
     return all;
   }
 
+  public async getAllRecordView(): Promise<Array<RecordView>> {
+    const recordView = new Array<RecordView>();
+    for (let i = 0; i < this.records.length; i++) {
+      if (this.records[i].event === 'START') {
+        if (i + 1 < this.records.length) {
+          if (this.records[i].kind === this.records[i + 1].kind
+            && this.records[i + 1].event === 'END') {
+            const view = {
+              kind: this.records[i].kind,
+              start: this.records[i].time,
+              end: this.records[i + 1].time,
+              audio: this.records[i + 1].audio,
+              text: this.records[i + 1].text,
+              blobUrl: this.records[i + 1].audio ? window.URL.createObjectURL(this.records[i + 1].audio as Blob) : undefined,
+              html: await marked(this.records[i + 1].text || '')
+            };
+            recordView.push(view);
+          }
+        }
+      }
+    }
+    return recordView;
+  }
+
   /**
    * csvフォーマットで書き出す
    * @returns {URL|undefined} csvデータのURL
    */
   public export2csv(): URL | undefined {
     if (this.records.length === 0) {
+      console.error('記録がありません');
       return;
     }
 
@@ -121,6 +174,82 @@ export class RecorderService {
     });
 
     return new URL(window.URL.createObjectURL(blob));
+  }
+
+  public requestRecordAudio() {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
+    if (this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.requestData();
+    }
+  }
+
+  public startRecordAudio(handler: (blob: Blob) => void) {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
+    this.mediaRecorder = new MediaRecorder(this.stream);
+
+    this.mediaRecorder.ondataavailable = async (event: BlobEvent) => {
+      this.chunks.push(event.data);
+    };
+
+    this.mediaRecorder.onstop = async (event) => {
+      const blob = new Blob(this.chunks, {
+        type: this.mediaRecorder.mimeType
+      });
+
+      this.chunks = new Array<Blob>();
+
+      handler(blob);
+    };
+
+    if (this.mediaRecorder.state === 'inactive') {
+      this.mediaRecorder.start();
+    }
+  }
+
+  public stopRecordAudio() {
+    if (!this.isAudioAvailable) {
+      return;
+    }
+
+    if (!this.stream) {
+      throw new Error('stream is undefined')
+    }
+
+    if (this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+  }
+
+  public enableAudio(): void {
+    const constraints = {
+      audio: true
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream: MediaStream) => {
+        this.stream = stream;
+      });
+
+    this.isAudioAvailable = true;
+  }
+
+  public disableAudio(): void {
+    this.stream = undefined;
+    this.isAudioAvailable = false;
   }
 }
 

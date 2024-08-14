@@ -3,6 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ClickButtonset } from './components/buttonset/buttonset.component';
 import { RecorderService } from './services/recorder.service';
 
+
 export const SEARCHPARAM_KEY_BUTTON = 'b';
 
 @Component({
@@ -36,9 +37,9 @@ export class AppComponent implements OnInit {
   // app-buttonset コンポーネントへの入力
   // ボタンの文字列の配列
   public buttonset: string[] = [
-    '一斉学習',
-    '個別学習',
-    '協働学習'
+    '説明',
+    'やりとり',
+    '声かけ'
   ];
 
   onSelectionChange(event: StepperSelectionEvent): void {

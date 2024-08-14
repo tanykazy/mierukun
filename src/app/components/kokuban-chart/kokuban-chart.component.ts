@@ -1,9 +1,10 @@
-import { Component, ElementRef, HostListener, Input, OnChanges, AfterContentChecked, SimpleChanges, ViewChild, Inject, Injectable, LOCALE_ID, NgZone } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild, Inject, Injectable, LOCALE_ID, NgZone } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { RecorderService } from '../../services/recorder.service';
+import { RecorderService, RecordView } from '../../services/recorder.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+
 
 declare const google: any;
 
@@ -14,15 +15,18 @@ type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
   templateUrl: './kokuban-chart.component.html',
   styleUrls: ['./kokuban-chart.component.css']
 })
-export class KokubanChartComponent implements OnChanges, AfterContentChecked {
+export class KokubanChartComponent implements OnChanges {
   constructor(
     private scriptLoader: ScriptLoaderService,
     private recorder: RecorderService
-  ) { }
+  ) {
+    this.records = [];
+  }
 
   @ViewChild('chart_aria') chartAria!: ElementRef;
 
-  public chartType: ChartType = 'Treemap';
+  public chartType: ChartType = 'PieChart';
+  public records: Array<RecordView>;
 
   private readonly chartaria = 'chart-aria';
   private dataTable = new Map<string, number>();
@@ -39,13 +43,25 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
     return this.dataTable.size > 0;
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.switchChartType(this.chartType);
-  }
 
-  ngAfterContentChecked(): void {
     const total = this.recorder.getAllTotal();
     this.dataTable = total;
+
+    this.records = await this.recorder.getAllRecordView();
+  }
+
+  onClickDownloadAudio(event: UIEvent, record: RecordView): void {
+    if (record.audio) {
+      const uri = window.URL.createObjectURL(record.audio as Blob);
+      if (uri) {
+        const a = document.createElement('a');
+        a.href = uri;
+        a.download = `${record.start?.toLocaleTimeString()}.mp3`;
+        a.click();
+      }
+    }
   }
 
   /**
@@ -75,9 +91,12 @@ export class KokubanChartComponent implements OnChanges, AfterContentChecked {
   public onClickDownloadCSV(event: UIEvent): void {
     const url = this.recorder.export2csv();
     if (url) {
+      const now = new Date();
+      const name = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')} ${this.recorder.grade.toString().padStart(2, '0')}${this.recorder.subject || ''}`;
+
       const a = document.createElement('a');
       a.href = url.href;
-      a.download = Date.now() + '.csv';
+      a.download = `${name}.csv`;
       a.click();
     }
   }
@@ -242,7 +261,7 @@ function b64_to_utf8(str: string): string {
   providedIn: 'root'
 })
 export class ScriptLoaderService {
-  private readonly scriptSource = 'https://www.gstatic.com/charts/loader.js';
+  private readonly scriptSourceChartsLoader = 'https://www.gstatic.com/charts/loader.js';
   private readonly scriptLoadSubject = new Subject<void>();
 
   constructor(
@@ -331,13 +350,13 @@ export class ScriptLoaderService {
 
   private getGoogleChartsScript(): HTMLScriptElement | undefined {
     const pageScripts = Array.from(document.getElementsByTagName('script'));
-    return pageScripts.find(script => script.src === this.scriptSource);
+    return pageScripts.find(script => script.src === this.scriptSourceChartsLoader);
   }
 
   private createGoogleChartsScript(): HTMLScriptElement {
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = this.scriptSource;
+    script.src = this.scriptSourceChartsLoader;
     script.async = true;
     document.getElementsByTagName('head')[0].appendChild(script);
     return script;

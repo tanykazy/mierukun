@@ -1,10 +1,27 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatOption } from '@angular/material/core';
+import { MatSelectChange } from '@angular/material/select';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
+import { RecorderService } from 'src/app/services/recorder.service'
+import { GeminiService } from '../../services/gemini.service';
+
+
+const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
+これから入力される音声は、授業中の教師と生徒の発話です。
+観察者は、この時の教師の行動を<<button>>と記録しました。
+
+この音声データを元に、以下の観点で分析し、具体的な行動に基づいたフィードバックを生成してください。
+
+* **発話内容の詳細**: 
+    * 教師は授業中、具体的にどのような言葉を発していますか？ 教師の発言を箇条書きで列挙してください。
+    * 各発言の意図は何か？（例：授業の導入、指示、説明、質問、励まし、評価など）`;
 
 @Component({
   selector: 'app-inputmore',
@@ -13,9 +30,21 @@ import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 })
 export class InputmoreComponent {
   constructor(
+    private recorderService: RecorderService,
+    private geminiService: GeminiService,
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
-  ) { }
+  ) {
+    this.apikey = window.localStorage.getItem('API_KEY') || '';
+    this.prompt = window.localStorage.getItem('PROMPT') || DEFAULT_PROMPT;
+    window.localStorage.setItem('PROMPT', this.prompt);
+  }
+
+  grade!: MatOption;
+  subject!: string;
+  recordeAudio: boolean = false;
+  apikey: string;
+  prompt: string;
 
   @Input() label!: string;
   @Input() placeholder!: string;
@@ -79,6 +108,39 @@ export class InputmoreComponent {
         this.openSnackBar('Failed to copy.', 'OK');
       }
     }
+  }
+
+  onChangeRecordAudio(event: MatSlideToggleChange): void {
+    if (event.checked) {
+      this.recorderService.enableAudio();
+
+      this.geminiService.initializeModel(this.apikey);
+    } else {
+      this.recorderService.disableAudio();
+    }
+  }
+
+  onInputApikey(event: Event): void {
+    const apikey = (event.target as HTMLInputElement).value;
+
+    if (apikey.length === 0) {
+      this.recordeAudio = false;
+    }
+
+    this.apikey = apikey;
+    window.localStorage.setItem('API_KEY', apikey);
+  }
+
+  onInputPrompt(event: Event): void {
+    window.localStorage.setItem('PROMPT', (event.target as HTMLInputElement).value);
+  }
+
+  onInputSubject(event: Event): void {
+    this.recorderService.subject = (event.target as HTMLInputElement).value;
+  }
+
+  onChangeGrade(event: MatSelectChange): void {
+    this.recorderService.grade = event.value;
   }
 
   openSnackBar(message: string, action: string): void {
