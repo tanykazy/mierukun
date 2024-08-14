@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+
 import { RecorderService } from '../../services/recorder.service';
+
 
 export interface ClickButton {
   name: string;

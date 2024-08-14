@@ -84,7 +84,8 @@
 
         <mat-form-field class="full-width-field">
             <mat-label>プロンプト</mat-label>
-            <textarea matInput placeholder="プロンプトを入力する" (input)="onInputPrompt($event)" [(ngModel)]="prompt"></textarea>
+            <textarea matInput placeholder="プロンプトを入力する" [disabled]="apikey.length === 0" (input)="onInputPrompt($event)"
+                [(ngModel)]="prompt"></textarea>
             <mat-hint>
                 &lt;&lt;button&gt;&gt; がボタンの名前として扱われます。
             </mat-hint>

@@ -7,8 +7,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 import { RecorderService } from 'src/app/services/recorder.service'
+import { GeminiService } from '../../services/gemini.service';
+
 
 const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
 これから入力される音声は、授業中の教師と生徒の発話です。
@@ -28,6 +31,7 @@ const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業�
 export class InputmoreComponent {
   constructor(
     private recorderService: RecorderService,
+    private geminiService: GeminiService,
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
   ) {
@@ -109,17 +113,22 @@ export class InputmoreComponent {
   onChangeRecordAudio(event: MatSlideToggleChange): void {
     if (event.checked) {
       this.recorderService.enableAudio();
+
+      this.geminiService.initializeModel(this.apikey);
     } else {
       this.recorderService.disableAudio();
     }
   }
 
   onInputApikey(event: Event): void {
-    if ((event.target as HTMLInputElement).value.length === 0) {
+    const apikey = (event.target as HTMLInputElement).value;
+
+    if (apikey.length === 0) {
       this.recordeAudio = false;
     }
 
-    window.localStorage.setItem('API_KEY', (event.target as HTMLInputElement).value);
+    this.apikey = apikey;
+    window.localStorage.setItem('API_KEY', apikey);
   }
 
   onInputPrompt(event: Event): void {

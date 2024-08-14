@@ -3,9 +3,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ClickButtonset } from './components/buttonset/buttonset.component';
 import { RecorderService } from './services/recorder.service';
 
-export const SEARCHPARAM_KEY_BUTTON = 'b';
 
-// let apiLoaded: boolean = false;
+export const SEARCHPARAM_KEY_BUTTON = 'b';
 
 @Component({
   selector: 'app-root',

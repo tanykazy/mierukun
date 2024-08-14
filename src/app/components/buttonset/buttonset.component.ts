@@ -11,7 +11,7 @@ export interface ClickButtonset {
   button: string;
   // イベント種別
   event: Event;
-  // イベント発生時間 Date.now() の返値
+  // イベント発生時間
   time: Date;
 }
 
@@ -113,13 +113,11 @@ export class ButtonsetComponent implements OnDestroy {
     let prompt = window.localStorage.getItem('PROMPT');
     prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
 
-    const response = await this.geminiService.generateContent(window.localStorage.getItem('API_KEY') || '', [{
+    const response = await this.geminiService.generateContent({
       text: prompt
-    }, await GeminiService.blobToGenerativePart(blob, 'audio/mpeg')]);
-    console.log(response);
+    }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
 
     const text = response.candidates[0].content.parts[0].text;
-    console.log(text);
 
     if (lastRecord) {
       lastRecord.audio = blob;

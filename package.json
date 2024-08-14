@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^17.3.11",
     "@angular/router": "^17.3.11",
     "@angular/service-worker": "^17.3.11",
+    "@google/generative-ai": "^0.17.0",
     "marked": "^13.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
