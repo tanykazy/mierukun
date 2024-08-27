@@ -18,7 +18,7 @@
                 "inlineCritical": false
               }
             },
-            "outputPath": "dist/mierukun",
+            "outputPath": "dist/mierukun/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -44,7 +44,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -105,6 +105,61 @@
         },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy"
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/mierukun/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "optimization": true
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false,
+              "vendorChunk": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@angular-devkit/build-angular:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "mierukun:build:development",
+              "serverTarget": "mierukun:server:development"
+            },
+            "production": {
+              "browserTarget": "mierukun:build:production",
+              "serverTarget": "mierukun:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@angular-devkit/build-angular:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "mierukun:build:production",
+              "serverTarget": "mierukun:server:production"
+            },
+            "development": {
+              "browserTarget": "mierukun:build:development",
+              "serverTarget": "mierukun:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
