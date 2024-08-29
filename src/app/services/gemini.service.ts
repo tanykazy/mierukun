@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { GoogleGenerativeAI, GenerativeModel, Part, TextPart, InlineDataPart } from '@google/generative-ai';
+import { GoogleGenerativeAI, GenerativeModel, TextPart, InlineDataPart } from '@google/generative-ai';
 
 
 @Injectable({
