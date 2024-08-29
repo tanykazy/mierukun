@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "start-pwa": "http-server dist/$npm_package_name",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "gcloud run deploy mierukun --platform managed --allow-unauthenticated --port 4200 --min-instances 0 --max-instances 1"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@angular/router": "^17.3.11",
     "@angular/service-worker": "^17.3.11",
     "@google/generative-ai": "^0.17.0",
+    "express": "^4.19.2",
     "marked": "^13.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
