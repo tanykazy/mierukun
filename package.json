@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^17.3.11",
     "@angular/router": "^17.3.11",
     "@angular/service-worker": "^17.3.11",
+    "@google-cloud/vertexai": "^1.6.0",
     "@google/generative-ai": "^0.17.0",
     "express": "^4.19.2",
     "marked": "^13.0.2",
