@@ -7,6 +7,8 @@ app.get('/', function (req, res) {
 });
 
 app.post('/predict', async (req, res) => {
+    console.error(req);
+    console.error(res);
     try {
         const instances = req.body.instances; // リクエストボディからインスタンスを取得
 
