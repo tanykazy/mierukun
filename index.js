@@ -7,16 +7,37 @@ app.get('/', function (req, res) {
 });
 
 app.post('/predict', async (req, res) => {
-    console.error(req);
-    console.error(res);
     try {
-        const instances = req.body; // リクエストボディからインスタンスを取得
+        // const instances = req.body; // リクエストボディからインスタンスを取得
 
         // Vertex AI へのリクエストを作成
-        const request = {
-            endpoint,
-            instances,
-        };
+        // const request = {
+        //     endpoint,
+        //     instances,
+        // };
+        console.log(req.body);
+
+        // console.log(textPart);
+        // console.log(audioPart);
+
+        // const response = fetch('/predict', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         contents: [{
+        //             role: 'user',
+        //             parts: textPart
+        //         }, {
+        //             role: 'user',
+        //             parts: audioPart
+        //         }],
+        //     })
+        // });
+
+        // console.log(response);
+        // return response.then(response => response.json());
 
         // Vertex AI に予測をリクエスト
         const response = await createNonStreamingMultipartContent();

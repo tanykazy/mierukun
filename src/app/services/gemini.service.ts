@@ -20,6 +20,55 @@ export class GeminiService {
   }
 
   public generateContent(textPart: TextPart, audioPart: InlineDataPart): Promise<any> {
+    // test
+    // const instances = {
+    //   text: 'sample text'
+    // };
+
+    // fetch('/predict', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(instances)
+    // })
+    //   .then(response => response.json())
+    //   .then(predictions => {
+    //     console.log('予測結果:', predictions);
+    //     // 予測結果を元に、必要な処理を実行します
+    //   })
+    //   .catch(error => {
+    //     console.error('予測中にエラーが発生しました:', error);
+    //     // エラー処理を行います
+    //   });
+    console.log(textPart);
+    console.log(audioPart);
+
+    const response = fetch('/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{
+          role: 'user',
+          parts: textPart
+        }, {
+          role: 'user',
+          parts: audioPart
+        }],
+      })
+    });
+
+    console.log(response);
+    return response.then(response => response.json());
+
+
+
+
+
+
+
     if (!this.generativeAI || !this.generativeModel) {
       throw new Error('モデルが初期化されていません');
     }
