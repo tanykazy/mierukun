@@ -15,6 +15,7 @@ app.post('/predict', async (req, res) => {
         //     endpoint,
         //     instances,
         // };
+        console.log(req);
         console.log(req.body);
 
         // console.log(textPart);
