@@ -13,10 +13,10 @@ export class GeminiService {
   private generativeModel!: GenerativeModel;
 
   public initializeModel(apikey: string) {
-    this.generativeAI = new GoogleGenerativeAI(apikey);
-    this.generativeModel = this.generativeAI.getGenerativeModel({
-      model: 'gemini-1.5-pro'
-    });
+    // this.generativeAI = new GoogleGenerativeAI(apikey);
+    // this.generativeModel = this.generativeAI.getGenerativeModel({
+    //   model: 'gemini-1.5-pro'
+    // });
   }
 
   public generateContent(textPart: TextPart, audioPart: InlineDataPart): Promise<any> {
@@ -64,21 +64,16 @@ export class GeminiService {
     return response.then(response => response.json());
 
 
+    // if (!this.generativeAI || !this.generativeModel) {
+    //   throw new Error('モデルが初期化されていません');
+    // }
 
+    // const result = this.generativeModel.generateContent([
+    //   textPart,
+    //   audioPart
+    // ]);
 
-
-
-
-    if (!this.generativeAI || !this.generativeModel) {
-      throw new Error('モデルが初期化されていません');
-    }
-
-    const result = this.generativeModel.generateContent([
-      textPart,
-      audioPart
-    ]);
-
-    return result.then(res => res.response);
+    // return result.then(res => res.response);
   }
 
   // Converts a Blob object to a GoogleGenerativeAI.Part object.
