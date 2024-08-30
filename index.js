@@ -97,7 +97,7 @@ async function createNonStreamingMultipartContent(
     //     contents: [{ role: 'user', parts: [filePart, textPart] }],
     // };
     const request = {
-        contents: contents,
+        contents: JSON.parse(contents),
     };
 
     console.log('Prompt Text:');
