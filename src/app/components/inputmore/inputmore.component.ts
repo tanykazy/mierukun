@@ -122,16 +122,16 @@ export class InputmoreComponent {
 
   onInputApikey(event: Event): void {
     // test
-    const instances = [
-      'sample text'
-    ];
+    const instances = {
+      text: 'sample text'
+    };
 
     fetch('/predict', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ instances })
+      body: JSON.stringify(instances)
     })
       .then(response => response.json())
       .then(predictions => {
