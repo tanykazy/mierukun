@@ -43,7 +43,7 @@ app.post('/predict', async (req, res) => {
         // return response.then(response => response.json());
 
         // Vertex AI に予測をリクエスト
-        const response = await createNonStreamingMultipartContent();
+        const response = await createNonStreamingMultipartContent(req.body);
 
         // レスポンスを返す
         res.json(response);
