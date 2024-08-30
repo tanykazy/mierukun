@@ -11,6 +11,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 import { RecorderService } from 'src/app/services/recorder.service'
 import { GeminiService } from '../../services/gemini.service';
+import { text } from 'express';
 
 
 const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
@@ -123,7 +124,12 @@ export class InputmoreComponent {
   onInputApikey(event: Event): void {
     // test
     const instances = {
-      text: 'sample text'
+      contents: [{
+        role: 'user',
+        parts: {
+          text: 'sample prompt'
+        }
+      }]
     };
 
     fetch('/predict', {
