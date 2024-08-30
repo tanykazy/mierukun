@@ -19,6 +19,7 @@ app.post('/predict', async (req, res) => {
         // };
         console.log('========== Debug ==========');
         console.log(req.body);
+        console.log(JSON.parse(req.body));
         console.log(req.body.contents[0].parts[0].text);
 
         // console.log(textPart);
@@ -97,7 +98,7 @@ async function createNonStreamingMultipartContent(
     //     contents: [{ role: 'user', parts: [filePart, textPart] }],
     // };
     const request = {
-        contents: JSON.parse(contents),
+        contents: contents,
     };
 
     console.log('Prompt Text:');
