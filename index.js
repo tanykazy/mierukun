@@ -110,8 +110,7 @@ async function createNonStreamingMultipartContent(
     const aggregatedResponse = await responseStream.response;
 
     // Select the text from the response
-    const fullTextResponse =
-        aggregatedResponse.candidates[0].content.parts[0].text;
+    const fullTextResponse = aggregatedResponse.candidates[0].content.parts[0].text;
 
     console.log(fullTextResponse);
 }
