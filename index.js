@@ -10,7 +10,7 @@ app.post('/predict', async (req, res) => {
     console.error(req);
     console.error(res);
     try {
-        const instances = req.body.instances; // リクエストボディからインスタンスを取得
+        const instances = req.body; // リクエストボディからインスタンスを取得
 
         // Vertex AI へのリクエストを作成
         const request = {
