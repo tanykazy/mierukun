@@ -121,6 +121,29 @@ export class InputmoreComponent {
   }
 
   onInputApikey(event: Event): void {
+    // test
+    const instances = {
+      text: 'sample text'
+    };
+
+    fetch('/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(instances)
+    })
+      .then(response => response.json())
+      .then(predictions => {
+        console.log('予測結果:', predictions);
+        // 予測結果を元に、必要な処理を実行します
+      })
+      .catch(error => {
+        console.error('予測中にエラーが発生しました:', error);
+        // エラー処理を行います
+      });
+
+
     const apikey = (event.target as HTMLInputElement).value;
 
     if (apikey.length === 0) {
