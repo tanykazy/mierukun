@@ -126,9 +126,9 @@ export class InputmoreComponent {
     const instances = {
       contents: [{
         role: 'user',
-        parts: {
+        parts: [{
           text: 'sample prompt'
-        }
+        }]
       }]
     };
 
