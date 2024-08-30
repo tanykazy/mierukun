@@ -35,7 +35,7 @@ const { VertexAI } = require('@google-cloud/vertexai');
  * TODO(developer): Update these variables before running the sample.
  */
 async function createNonStreamingMultipartContent(
-    projectId = process.env.PROJECT_ID,
+    projectId = 'mierukun-github',
     location = 'us-central1',
     model = 'gemini-1.5-pro',
     image = 'gs://generativeai-downloads/images/scones.jpg',
