@@ -11,7 +11,7 @@ app.get('/', function (req, res) {
     res.redirect('/');
 });
 
-app.post('/predict', async (req, res) => {
+app.post('/gemini', async (req, res) => {
     try {
         // Vertex AI に予測をリクエスト
         const response = await createNonStreamingMultipartContent(req.body);

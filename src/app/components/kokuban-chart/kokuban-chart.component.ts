@@ -2,8 +2,9 @@ import { Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, V
 import { Observable, of, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { RecorderService, RecordView } from '../../services/recorder.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+
+import { RecorderService, RecordView } from '../../services/recorder.service';
 
 
 declare const google: any;

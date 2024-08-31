@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 
+import { ButtonComponent, ClickButton } from '../button/button.component';
 import { GeminiService } from '../../services/gemini.service';
 import { RecorderService, Event } from '../../services/recorder.service';
-import { ButtonComponent, ClickButton } from '../button/button.component';
 
 
 /** コンポーネント外部に送出するイベントの引数 */

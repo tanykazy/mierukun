@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+
 import { ClickButtonset } from './components/buttonset/buttonset.component';
 import { RecorderService } from './services/recorder.service';
+import { GeminiService } from './services/gemini.service';
 
 
 export const SEARCHPARAM_KEY_BUTTON = 'b';
@@ -13,7 +15,8 @@ export const SEARCHPARAM_KEY_BUTTON = 'b';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private recorder: RecorderService
+    private geminiService: GeminiService,
+    public recorderService: RecorderService
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +46,12 @@ export class AppComponent implements OnInit {
   ];
 
   onSelectionChange(event: StepperSelectionEvent): void {
-    const total = this.recorder.getAllTotal();
+    console.log(event);
+    if (event.selectedIndex === 1) {
+      console.log('selectedIndex:', event.selectedIndex);
+    }
+
+    const total = this.recorderService.getAllTotal();
     this.treeData = total;
   }
 
@@ -53,7 +61,7 @@ export class AppComponent implements OnInit {
    */
   public onClickButtonset(event: ClickButtonset): void {
     console.debug(event);
-    this.recorder.record({
+    this.recorderService.record({
       kind: event.button,
       event: event.event,
       time: event.time
