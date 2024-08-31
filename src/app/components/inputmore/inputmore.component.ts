@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatOption } from '@angular/material/core';
 import { MatSelectChange } from '@angular/material/select';
@@ -27,7 +27,7 @@ const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業�
   templateUrl: './inputmore.component.html',
   styleUrls: ['./inputmore.component.css']
 })
-export class InputmoreComponent {
+export class InputmoreComponent implements OnInit {
   constructor(
     private recorderService: RecorderService,
     private matSnackBar: MatSnackBar,
@@ -36,10 +36,9 @@ export class InputmoreComponent {
     this.prompt = window.localStorage.getItem('PROMPT') || DEFAULT_PROMPT;
     window.localStorage.setItem('PROMPT', this.prompt);
   }
-
   grade!: MatOption;
   subject!: string;
-  recordeAudio: boolean = true;
+  recordeAudio: boolean = false;
   prompt: string;
 
   @Input() label!: string;
@@ -50,6 +49,11 @@ export class InputmoreComponent {
 
   readonly addOnBlur: boolean = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  ngOnInit(): void {
+    this.recorderService.enableAudio();
+    this.recordeAudio = this.recorderService.isAudioAvailable;
+  }
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
