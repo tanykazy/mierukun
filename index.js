@@ -53,7 +53,9 @@ app.post('/predict', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500)
-            .send('予測中にエラーが発生しました');
+            .send({
+                text: '予測中にエラーが発生しました'
+            });
     }
 });
 
@@ -123,4 +125,6 @@ async function createNonStreamingMultipartContent(
     const fullTextResponse = aggregatedResponse.candidates[0].content.parts[0].text;
 
     console.log(fullTextResponse);
+
+    return response;
 }
