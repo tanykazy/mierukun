@@ -12,6 +12,12 @@
         <div [innerHTML]="summary.html">
             <!-- {{record.text}} -->
         </div>
+        <div>
+            <audio controls preload="none">
+                <source [src]="summary.blobUrl" type="audio/webm" />
+                <a [href]="summary.blobUrl">Download</a>
+            </audio>
+        </div>
     </mat-card-content>
     <mat-card-actions align="end">
         <button mat-icon-button [disabled]="!isDrawn" [matMenuTriggerFor]="menu">
@@ -25,10 +31,6 @@
                 <span>CSV</span>
             </button>
         </mat-menu>
-        <audio controls preload="none">
-            <source [src]="summary.blobUrl" type="audio/webm" />
-            <a [href]="summary.blobUrl">Download</a>
-        </audio>
     </mat-card-actions>
 </mat-card>
 
@@ -42,16 +44,16 @@
                 {{record.start.toLocaleTimeString()}} - {{record.end.toLocaleTimeString()}}
             </mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content [innerHTML]="record.html">
-            <!-- {{record.text}} -->
-        </mat-card-content>
-        <mat-card-actions align="end">
+        <!-- <mat-card-content [innerHTML]="record.html"> -->
+        <!-- {{record.text}} -->
+        <!-- </mat-card-content> -->
+        <!-- <mat-card-actions align="end">
             <ng-container *ngIf="record.audio">
                 <audio controls preload="none">
                     <source [src]="record.blobUrl" type="audio/webm" />
                     <a [href]="record.blobUrl">Download</a>
                 </audio>
             </ng-container>
-        </mat-card-actions>
+        </mat-card-actions> -->
     </mat-card>
 </ng-container>

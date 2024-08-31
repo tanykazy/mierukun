@@ -22,8 +22,8 @@ export interface ClickButtonset {
 })
 export class ButtonsetComponent implements OnDestroy {
   constructor(
-    private geminiService: GeminiService,
-    private recorderService: RecorderService
+    // private geminiService: GeminiService,
+    // private recorderService: RecorderService
   ) { }
 
   @ViewChildren(ButtonComponent) buttons!: QueryList<ButtonComponent>;
