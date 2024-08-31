@@ -52,11 +52,8 @@ export class GeminiService {
       body: JSON.stringify({
         contents: [{
           role: 'user',
-          parts: textPart
-        }, {
-          role: 'user',
-          parts: audioPart
-        }],
+          parts: [textPart, audioPart]
+        }]
       })
     });
 
