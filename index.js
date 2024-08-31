@@ -108,10 +108,10 @@ async function createNonStreamingMultipartContent(
 
     console.log('Non-Streaming Response Text:');
     // Create the response stream
-    const responseStream = await generativeVisionModel.generateContentStream(request);
+    const response = await generativeVisionModel.generateContent(request);
 
     // Wait for the response stream to complete
-    const aggregatedResponse = await responseStream.response;
+    const aggregatedResponse = await response.response;
 
     // Select the text from the response
     const fullTextResponse = aggregatedResponse.candidates[0].content.parts[0].text;
