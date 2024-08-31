@@ -4,7 +4,10 @@ import { switchMap } from 'rxjs/operators';
 
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
+import { marked } from 'marked';
+
 import { RecorderService, RecordView } from '../../services/recorder.service';
+import { SafeHtml } from '@angular/platform-browser';
 
 
 declare const google: any;
@@ -28,6 +31,12 @@ export class KokubanChartComponent implements OnChanges {
 
   public chartType: ChartType = 'PieChart';
   public records: Array<RecordView>;
+  public summary!: {
+    audio: Blob;
+    text?: string;
+    blobUrl?: string;
+    html?: SafeHtml;
+  };
 
   private readonly chartaria = 'chart-aria';
   private dataTable = new Map<string, number>();
@@ -71,6 +80,15 @@ export class KokubanChartComponent implements OnChanges {
   public onChangeChartType(event: MatButtonToggleChange): void {
     const chartType = event.value;
     this.switchChartType(chartType);
+  }
+
+  public async setSummary(audio: Blob, text: string) {
+    this.summary = {
+      audio: audio,
+      text: text,
+      blobUrl: window.URL.createObjectURL(audio),
+      html: await marked(text)
+    };
   }
 
   /**

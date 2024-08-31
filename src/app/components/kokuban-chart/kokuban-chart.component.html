@@ -9,7 +9,7 @@
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
-        <div [innerHTML]="recorder.summary.html">
+        <div [innerHTML]="summary.html">
             <!-- {{record.text}} -->
         </div>
     </mat-card-content>
@@ -26,8 +26,8 @@
             </button>
         </mat-menu>
         <audio controls preload="none">
-            <source [src]="recorder.summary.blobUrl" type="audio/webm" />
-            <a href="recorder.summary.blobUrl">Download</a>
+            <source [src]="summary.blobUrl" type="audio/webm" />
+            <a [href]="summary.blobUrl">Download</a>
         </audio>
     </mat-card-actions>
 </mat-card>
@@ -49,7 +49,7 @@
             <ng-container *ngIf="record.audio">
                 <audio controls preload="none">
                     <source [src]="record.blobUrl" type="audio/webm" />
-                    <a href="record.blobUrl">Download</a>
+                    <a [href]="record.blobUrl">Download</a>
                 </audio>
             </ng-container>
         </mat-card-actions>

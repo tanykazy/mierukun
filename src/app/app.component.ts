@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { ClickButtonset } from './components/buttonset/buttonset.component';
+import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
 import { RecorderService } from './services/recorder.service';
 import { GeminiService } from './services/gemini.service';
-import { audit } from 'rxjs';
 
 
 export const SEARCHPARAM_KEY_BUTTON = 'b';
@@ -19,6 +19,8 @@ export class AppComponent implements OnInit {
     private geminiService: GeminiService,
     public recorderService: RecorderService
   ) { }
+
+  @ViewChild(KokubanChartComponent) kokubanChart!: KokubanChartComponent;
 
   ngOnInit(): void {
     window.addEventListener('beforeunload', this.onBeforeunload);
@@ -100,7 +102,8 @@ export class AppComponent implements OnInit {
     // const text = response.candidates[0].content.parts[0].text;
     const text = response;
 
-    this.recorderService.setSummary(blob, text);
+    this.kokubanChart.setSummary(blob, text);
+    // this.recorderService.setSummary(blob, text);
 
     // if (lastRecord) {
     //   lastRecord.audio = blob;
