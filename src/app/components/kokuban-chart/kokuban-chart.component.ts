@@ -8,6 +8,7 @@ import { marked } from 'marked';
 
 import { RecorderService, RecordView } from '../../services/recorder.service';
 import { SafeHtml } from '@angular/platform-browser';
+import { text } from 'express';
 
 
 declare const google: any;
@@ -31,12 +32,17 @@ export class KokubanChartComponent implements OnChanges {
 
   public chartType: ChartType = 'PieChart';
   public records: Array<RecordView>;
-  public summary!: {
-    audio: Blob;
-    text?: string;
-    blobUrl?: string;
-    html?: SafeHtml;
-  };
+  public summary: {
+    audio: Blob | null;
+    text: string;
+    blobUrl: string;
+    html: SafeHtml;
+  } = {
+      audio: null,
+      text: '',
+      blobUrl: '',
+      html: '',
+    };
 
   private readonly chartaria = 'chart-aria';
   private dataTable = new Map<string, number>();
@@ -60,6 +66,7 @@ export class KokubanChartComponent implements OnChanges {
     this.dataTable = total;
 
     this.records = await this.recorder.getAllRecordView();
+    this.summary.html = await marked(this.summary.text);
   }
 
   onClickDownloadAudio(event: UIEvent, record: RecordView): void {

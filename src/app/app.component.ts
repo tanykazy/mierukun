@@ -104,7 +104,14 @@ export class AppComponent implements OnInit {
     // const text = response.candidates[0].content.parts[0].text;
     const text = response;
 
-    await this.kokubanChart.setSummary(blob, text);
+    this.kokubanChart.summary = {
+      audio: blob,
+      text: text,
+      blobUrl: window.URL.createObjectURL(blob),
+      html: ''
+    };
+
+    // await this.kokubanChart.setSummary(blob, text);
     // this.recorderService.setSummary(blob, text);
 
     // if (lastRecord) {
