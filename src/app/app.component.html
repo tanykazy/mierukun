@@ -1,6 +1,10 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <span>{{title}}</span>
+
+    <div class="spacer"></div>
+
+    <mat-icon color="accent">mic</mat-icon>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -10,6 +14,7 @@
 
   <mat-sidenav-content>
     <mat-stepper [selectedIndex]="selectedIndex" (selectionChange)="onSelectionChange($event)" #stepper>
+
       <mat-step [completed]="buttonset.length > 0" [editable]="isButtonEditable">
         <ng-template matStepLabel>
           <span>設定</span>
@@ -21,6 +26,7 @@
           </div>
         </ng-template>
       </mat-step>
+
       <mat-step>
         <ng-template matStepLabel>
           <span>記録</span>
@@ -34,6 +40,7 @@
           </div>
         </ng-template>
       </mat-step>
+
       <mat-step [editable]="false">
         <ng-template matStepLabel>
           <span>結果</span>
@@ -46,6 +53,7 @@
           </div>
         </ng-template>
       </mat-step>
+
     </mat-stepper>
   </mat-sidenav-content>
 </mat-sidenav-container>
