@@ -13,40 +13,6 @@ app.get('/', function (req, res) {
 
 app.post('/predict', async (req, res) => {
     try {
-        // const instances = req.body; // リクエストボディからインスタンスを取得
-
-        // Vertex AI へのリクエストを作成
-        // const request = {
-        //     endpoint,
-        //     instances,
-        // };
-        console.log('========== Debug ==========');
-        // console.log(req.body);
-        console.log(JSON.stringify(req.body));
-        // console.log(req.body.contents[0].parts[0].text);
-
-        // console.log(textPart);
-        // console.log(audioPart);
-
-        // const response = fetch('/predict', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         contents: [{
-        //             role: 'user',
-        //             parts: textPart
-        //         }, {
-        //             role: 'user',
-        //             parts: audioPart
-        //         }],
-        //     })
-        // });
-
-        // console.log(response);
-        // return response.then(response => response.json());
-
         // Vertex AI に予測をリクエスト
         const response = await createNonStreamingMultipartContent(req.body);
 
@@ -73,8 +39,6 @@ async function createNonStreamingMultipartContent(
     projectId = 'mierukun-github',
     location = 'us-central1',
     model = 'gemini-1.5-pro',
-    // image = 'gs://generativeai-downloads/images/scones.jpg',
-    // mimeType = 'image/jpeg'
 ) {
     // Initialize Vertex with your Cloud project and location
     const vertexAI = new VertexAI({
@@ -87,47 +51,17 @@ async function createNonStreamingMultipartContent(
         model: model,
     });
 
-    // For images, the SDK supports both Google Cloud Storage URI and base64 strings
-    // const filePart = {
-    //     fileData: {
-    //         fileUri: image,
-    //         mimeType: mimeType,
-    //     },
-    // };
-
-    // const textPart = {
-    //     text: 'what is shown in this image?',
-    // };
-
     // const request = {
-    //     contents: [{
-    //         role: 'user',
-    //         parts: [filePart, textPart]
-    //     }],
-    // };
-    const request = {
-        contents
-    };
-    // const base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    // const filePart = { inline_data: { data: base64Image, mimeType: 'image/jpeg' } };
-    // const textPart = { text: 'What is this picture about?' };
-    // const request = {
-    //     contents: [{
-    //         role: 'user',
-    //         parts: [textPart, filePart]
-    //     }],
+    //     contents
     // };
 
     console.log('Prompt Text:');
     console.log(contents);
-    // console.log(request.contents[0].parts[1].text);
 
     console.log('Non-Streaming Response Text:');
     // Create the response stream
     const response = await generativeVisionModel.generateContent(contents);
     // const response = await generativeVisionModel.generateContent(request);
-
-    // return response;
 
     // Wait for the response stream to complete
     const aggregatedResponse = await response.response;

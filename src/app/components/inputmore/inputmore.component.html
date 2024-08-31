@@ -76,16 +76,8 @@
 
     <mat-card-content>
         <mat-form-field class="full-width-field">
-            <mat-label>Gemini API キー</mat-label>
-            <input matInput type="password" placeholder="Gemini API キーを入力する" (input)="onInputApikey($event)"
-                [(ngModel)]="apikey">
-            <mat-hint></mat-hint>
-        </mat-form-field>
-
-        <mat-form-field class="full-width-field">
             <mat-label>プロンプト</mat-label>
-            <textarea matInput placeholder="プロンプトを入力する" [disabled]="apikey.length === 0" (input)="onInputPrompt($event)"
-                [(ngModel)]="prompt"></textarea>
+            <textarea matInput placeholder="プロンプトを入力する" (input)="onInputPrompt($event)" [(ngModel)]="prompt"></textarea>
             <mat-hint>
                 &lt;&lt;button&gt;&gt; がボタンの名前として扱われます。
             </mat-hint>
@@ -93,8 +85,7 @@
     </mat-card-content>
 
     <mat-card-actions align="end">
-        <mat-slide-toggle [checked]="recordeAudio" [disabled]="apikey.length === 0" labelPosition="before"
-            (change)="onChangeRecordAudio($event)">
+        <mat-slide-toggle [checked]="recordeAudio" labelPosition="before" (change)="onChangeRecordAudio($event)">
             録音
         </mat-slide-toggle>
     </mat-card-actions>

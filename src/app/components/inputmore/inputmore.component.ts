@@ -10,7 +10,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { SEARCHPARAM_KEY_BUTTON } from 'src/app/app.component';
 import { RecorderService } from 'src/app/services/recorder.service'
-import { GeminiService } from '../../services/gemini.service';
 
 
 const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
@@ -31,11 +30,9 @@ const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業�
 export class InputmoreComponent {
   constructor(
     private recorderService: RecorderService,
-    private geminiService: GeminiService,
     private matSnackBar: MatSnackBar,
     private clipboard: Clipboard
   ) {
-    this.apikey = window.localStorage.getItem('API_KEY') || '';
     this.prompt = window.localStorage.getItem('PROMPT') || DEFAULT_PROMPT;
     window.localStorage.setItem('PROMPT', this.prompt);
   }
@@ -43,7 +40,6 @@ export class InputmoreComponent {
   grade!: MatOption;
   subject!: string;
   recordeAudio: boolean = false;
-  apikey: string;
   prompt: string;
 
   @Input() label!: string;
@@ -113,52 +109,9 @@ export class InputmoreComponent {
   onChangeRecordAudio(event: MatSlideToggleChange): void {
     if (event.checked) {
       this.recorderService.enableAudio();
-
-      this.geminiService.initializeModel(this.apikey);
     } else {
       this.recorderService.disableAudio();
     }
-  }
-
-  onInputApikey(event: Event): void {
-    // test
-    const instances = {
-      contents: [{
-        role: 'user',
-        parts: [{
-          text: 'sample prompt'
-        }]
-      }]
-    };
-
-    console.log(JSON.stringify(instances));
-
-    fetch('/predict', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(instances)
-    })
-      .then(response => response.json())
-      .then(predictions => {
-        console.log('予測結果:', predictions);
-        // 予測結果を元に、必要な処理を実行します
-      })
-      .catch(error => {
-        console.error('予測中にエラーが発生しました:', error);
-        // エラー処理を行います
-      });
-
-
-    const apikey = (event.target as HTMLInputElement).value;
-
-    if (apikey.length === 0) {
-      this.recordeAudio = false;
-    }
-
-    this.apikey = apikey;
-    window.localStorage.setItem('API_KEY', apikey);
   }
 
   onInputPrompt(event: Event): void {
