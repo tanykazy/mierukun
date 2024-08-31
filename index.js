@@ -100,15 +100,15 @@ async function createNonStreamingMultipartContent(
     // const request = {
     //     contents: [{ role: 'user', parts: [filePart, textPart] }],
     // };
-    // const request = {
-    //     contents: contents,
-    // };
-    const base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    const filePart = { inline_data: { data: base64Image, mimeType: 'image/jpeg' } };
-    const textPart = { text: 'What is this picture about?' };
     const request = {
-        contents: [{ role: 'user', parts: [textPart, filePart] }],
+        contents: contents,
     };
+    // const base64Image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    // const filePart = { inline_data: { data: base64Image, mimeType: 'image/jpeg' } };
+    // const textPart = { text: 'What is this picture about?' };
+    // const request = {
+    //     contents: [{ role: 'user', parts: [textPart, filePart] }],
+    // };
 
     console.log('Prompt Text:');
     console.log(contents);
