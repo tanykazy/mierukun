@@ -39,7 +39,7 @@ export class InputmoreComponent {
 
   grade!: MatOption;
   subject!: string;
-  recordeAudio: boolean = false;
+  recordeAudio: boolean = true;
   prompt: string;
 
   @Input() label!: string;

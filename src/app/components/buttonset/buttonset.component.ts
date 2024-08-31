@@ -63,7 +63,7 @@ export class ButtonsetComponent implements OnDestroy {
             time: now
           });
 
-          this.recorderService.stopRecordAudio();
+          // this.recorderService.stopRecordAudio();
         }
       });
     }
@@ -74,11 +74,11 @@ export class ButtonsetComponent implements OnDestroy {
       time: now
     });
 
-    if (event.state) {
-      this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
-    } else {
-      this.recorderService.stopRecordAudio();
-    }
+    // if (event.state) {
+    //   this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
+    // } else {
+    //   this.recorderService.stopRecordAudio();
+    // }
   }
 
   /**
@@ -98,33 +98,33 @@ export class ButtonsetComponent implements OnDestroy {
       }
     });
 
-    this.recorderService.stopRecordAudio();
+    // this.recorderService.stopRecordAudio();
   }
 
-  private async stopRecorderHandler(blob: Blob): Promise<void> {
-    let lastRecord;
-    for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
-      lastRecord = this.recorderService.records[i];
-      if (lastRecord.event === 'END') {
-        break;
-      }
-    }
+  // private async stopRecorderHandler(blob: Blob): Promise<void> {
+  //   let lastRecord;
+  //   for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
+  //     lastRecord = this.recorderService.records[i];
+  //     if (lastRecord.event === 'END') {
+  //       break;
+  //     }
+  //   }
 
-    let prompt = window.localStorage.getItem('PROMPT');
-    prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
+  //   let prompt = window.localStorage.getItem('PROMPT');
+  //   prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
 
-    const response = await this.geminiService.generateContent({
-      text: prompt
-    }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
+  //   const response = await this.geminiService.generateContent({
+  //     text: prompt
+  //   }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
 
-    console.log(response);
+  //   console.log(response);
 
-    // const text = response.candidates[0].content.parts[0].text;
-    const text = response;
+  //   // const text = response.candidates[0].content.parts[0].text;
+  //   const text = response;
 
-    if (lastRecord) {
-      lastRecord.audio = blob;
-      lastRecord.text = text;
-    }
-  }
+  //   if (lastRecord) {
+  //     lastRecord.audio = blob;
+  //     lastRecord.text = text;
+  //   }
+  // }
 }

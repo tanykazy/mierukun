@@ -56,6 +56,12 @@ export class RecorderService {
   private total = new Map<string, Total>();
   public grade: number;
   public subject!: string;
+  public summary!: {
+    audio: Blob;
+    text?: string;
+    blobUrl?: string;
+    html?: SafeHtml;
+  };
 
   public isAudioAvailable: boolean;
   public stream: MediaStream | undefined;
@@ -154,6 +160,15 @@ export class RecorderService {
       }
     }
     return recordView;
+  }
+
+  public async setSummary(audio: Blob, text: string) {
+    this.summary = {
+      audio: audio,
+      text: text,
+      blobUrl: window.URL.createObjectURL(audio),
+      html: await marked(text)
+    };
   }
 
   /**

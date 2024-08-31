@@ -19,7 +19,7 @@ type ChartType = 'Treemap' | 'PieChart' | 'ColumnChart';
 export class KokubanChartComponent implements OnChanges {
   constructor(
     private scriptLoader: ScriptLoaderService,
-    private recorder: RecorderService
+    public recorder: RecorderService
   ) {
     this.records = [];
   }

@@ -24,7 +24,9 @@
         <ng-template matStepContent>
           <app-inputmore label="ボタンの名前" placeholder="例: グループ活動" [(names)]="buttonset"></app-inputmore>
           <div>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-button matStepperNext (click)="onClickStartRecording($event)">
+              記録を開始
+            </button>
           </div>
         </ng-template>
       </mat-step>
@@ -37,8 +39,12 @@
           <app-buttonset [buttonset]="buttonset" (clickButtonset)="onClickButtonset($event)"
             [multiple]="false"></app-buttonset>
           <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-button matStepperPrevious>
+              戻る
+            </button>
+            <button mat-button matStepperNext (click)="onClickStopRecording($event)">
+              記録を終了
+            </button>
           </div>
         </ng-template>
       </mat-step>
@@ -50,8 +56,9 @@
         <ng-template matStepContent>
           <app-kokuban-chart [data]="treeData"></app-kokuban-chart>
           <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button (click)="stepper.reset()">Reset</button>
+            <button mat-button matStepperPrevious>
+              戻る
+            </button>
           </div>
         </ng-template>
       </mat-step>

@@ -4,6 +4,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { ClickButtonset } from './components/buttonset/buttonset.component';
 import { RecorderService } from './services/recorder.service';
 import { GeminiService } from './services/gemini.service';
+import { audit } from 'rxjs';
 
 
 export const SEARCHPARAM_KEY_BUTTON = 'b';
@@ -68,6 +69,43 @@ export class AppComponent implements OnInit {
     });
 
     this.isButtonEditable = false;
+  }
+
+  public onClickStartRecording(event: UIEvent): void {
+    this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
+  }
+
+  public onClickStopRecording(event: UIEvent): void {
+    this.recorderService.stopRecordAudio();
+  }
+
+  private async stopRecorderHandler(blob: Blob): Promise<void> {
+    // let lastRecord;
+    // for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
+    //   lastRecord = this.recorderService.records[i];
+    //   if (lastRecord.event === 'END') {
+    //     break;
+    //   }
+    // }
+
+    let prompt = window.localStorage.getItem('PROMPT') || '';
+    // prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
+
+    const response = await this.geminiService.generateContent({
+      text: prompt
+    }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
+
+    // console.log(response);
+
+    // const text = response.candidates[0].content.parts[0].text;
+    const text = response;
+
+    this.recorderService.setSummary(blob, text);
+
+    // if (lastRecord) {
+    //   lastRecord.audio = blob;
+    //   lastRecord.text = text;
+    // }
   }
 
   /**
