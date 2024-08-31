@@ -117,7 +117,10 @@ export class ButtonsetComponent implements OnDestroy {
       text: prompt
     }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
 
-    const text = response.candidates[0].content.parts[0].text;
+    console.log(response);
+
+    // const text = response.candidates[0].content.parts[0].text;
+    const text = response;
 
     if (lastRecord) {
       lastRecord.audio = blob;
