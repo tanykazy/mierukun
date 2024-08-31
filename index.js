@@ -2,7 +2,9 @@ var express = require("express");
 var app = express();
 
 app.use(express.static("dist/mierukun"));
-app.use(express.json());
+app.use(express.json({
+    limit: '1gb'
+}));
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', function (req, res) {
