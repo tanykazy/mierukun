@@ -21,9 +21,9 @@ app.post('/predict', async (req, res) => {
         //     instances,
         // };
         console.log('========== Debug ==========');
-        console.log(req.body);
+        // console.log(req.body);
         console.log(JSON.stringify(req.body));
-        console.log(req.body.contents[0].parts[0].text);
+        // console.log(req.body.contents[0].parts[0].text);
 
         // console.log(textPart);
         // console.log(audioPart);
