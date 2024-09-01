@@ -5,10 +5,10 @@ app.use(express.static("dist/mierukun"));
 app.use(express.json({
     limit: '100mb'
 }));
-app.use(express.urlencoded({
-    limit: '100mb',
-    extended: true
-}))
+// app.use(express.urlencoded({
+//     limit: '100mb',
+//     extended: true
+// }))
 
 app.get('/', function (req, res) {
     res.redirect('/');
@@ -25,7 +25,7 @@ app.post('/gemini', async (req, res) => {
         console.error(err);
         res.status(500)
             .send({
-                text: '予測中にエラーが発生しました'
+                text: 'エラーが発生しました'
             });
     }
 });

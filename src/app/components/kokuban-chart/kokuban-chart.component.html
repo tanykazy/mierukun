@@ -9,9 +9,17 @@
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
+        @if (html) {
         <div [innerHTML]="html">
             <!-- {{text}} -->
         </div>
+        } @else {
+        <div class="skeleton-container">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+        </div>
+        }
         @if (audio) {
         <div>
             <audio controls preload="none">
