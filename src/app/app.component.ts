@@ -94,6 +94,9 @@ export class AppComponent implements OnInit {
     //   }
     // }
 
+    this.kokubanChart.audio = blob;
+    this.kokubanChart.blobUrl = window.URL.createObjectURL(blob);
+
     let prompt = window.localStorage.getItem('PROMPT') || '';
     // prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
 
@@ -106,10 +109,7 @@ export class AppComponent implements OnInit {
     // const text = response.candidates[0].content.parts[0].text;
     const text = response;
 
-
-    this.kokubanChart.audio = blob;
     this.kokubanChart.text = text;
-    this.kokubanChart.blobUrl = window.URL.createObjectURL(blob);
     this.kokubanChart.html = await marked(text);
     // this.kokubanChart.summary = {
     //   audio: blob,
