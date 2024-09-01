@@ -47,13 +47,15 @@
             <mat-label>{{label}}</mat-label>
             <mat-chip-grid #chipGrid cdkDropList [cdkDropListAutoScrollDisabled]="true"
                 cdkDropListOrientation="vertical" (cdkDropListDropped)="drop($event)">
-                <mat-chip-row class="chip-row" cdkDrag *ngFor="let name of names" (removed)="remove(name)"
-                    [editable]="true" (edited)="edit(name, $event)">
+                @for (name of names; track $index) {
+                <mat-chip-row class="chip-row" cdkDrag (removed)="remove(name)" [editable]="true"
+                    (edited)="edit(name, $event)">
                     <span>{{name}}</span>
                     <button matChipRemove>
                         <mat-icon>cancel</mat-icon>
                     </button>
                 </mat-chip-row>
+                }
             </mat-chip-grid>
             <input [placeholder]="placeholder" [matChipInputFor]="chipGrid"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"

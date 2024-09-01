@@ -1,5 +1,7 @@
 <mat-grid-list class="grid-list" cols="2" rowHeight="fit">
-    <mat-grid-tile *ngFor="let button of buttonset">
+    @for (button of buttonset; track $index) {
+    <mat-grid-tile>
         <app-button [name]="button" (clickButton)="onClickButton($event)"></app-button>
     </mat-grid-tile>
+    }
 </mat-grid-list>
