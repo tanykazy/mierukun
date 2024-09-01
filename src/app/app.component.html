@@ -39,7 +39,7 @@
         <app-buttonset [buttonset]="buttonset" (clickButtonset)="onClickButtonset($event)"
           [multiple]="false"></app-buttonset>
         <div class="step-button-row">
-          <button mat-button matStepperPrevious>
+          <button mat-button matStepperPrevious [disabled]="!isButtonEditable">
             戻る
           </button>
           <button mat-button color="primary" matStepperNext (click)="onClickStopRecording($event)">
