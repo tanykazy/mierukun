@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-// import { TextPart, InlineDataPart } from '@google/generative-ai';
 import { TextPart, InlineDataPart } from '@google-cloud/vertexai';
 
 
