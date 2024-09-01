@@ -3,10 +3,10 @@ var app = express();
 
 app.use(express.static("dist/mierukun"));
 app.use(express.json({
-    limit: '1gb'
+    limit: '100mb'
 }));
 app.use(express.urlencoded({
-    limit: '1gb',
+    limit: '100mb',
     extended: true
 }))
 
