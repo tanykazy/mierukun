@@ -44,7 +44,7 @@ export class KokubanChartComponent implements OnChanges {
     };
 
   private readonly chartaria = 'chart-aria';
-  private dataTable = new Map<string, number>();
+  public dataTable = new Map<string, number>();
   private chartDataTable: any;
   private chart: any;
 

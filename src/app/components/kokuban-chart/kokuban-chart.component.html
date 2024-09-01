@@ -6,9 +6,25 @@
         </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+        @if (dataTable.size > 0) {
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
+
+        <button mat-icon-button [disabled]="!isDrawn" [matMenuTriggerFor]="menu">
+            <mat-icon>download</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onClickDownloadPNG($event)">
+                <span>PNG</span>
+            </button>
+            <button mat-menu-item (click)="onClickDownloadCSV($event)">
+                <span>CSV</span>
+            </button>
+        </mat-menu>
+        }
+
         @if (html !== '') {
         <div [innerHTML]="html">
             {{text}}
@@ -20,6 +36,7 @@
             <div class="skeleton-row"></div>
         </div>
         }
+
         @if (audio) {
         <div>
             <audio controls preload="none">
@@ -28,42 +45,36 @@
             </audio>
         </div>
         }
+
     </mat-card-content>
-    <mat-card-actions align="end">
-        <button mat-icon-button [disabled]="!isDrawn" [matMenuTriggerFor]="menu">
-            <mat-icon>download</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onClickDownloadPNG($event)">
-                <span>PNG</span>
-            </button>
-            <button mat-menu-item (click)="onClickDownloadCSV($event)">
-                <span>CSV</span>
-            </button>
-        </mat-menu>
-    </mat-card-actions>
 </mat-card>
 
-<ng-container *ngFor="let record of records">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                {{record.kind}}
-            </mat-card-title>
-            <mat-card-subtitle>
-                {{record.start.toLocaleTimeString()}} - {{record.end.toLocaleTimeString()}}
-            </mat-card-subtitle>
-        </mat-card-header>
-        <!-- <mat-card-content [innerHTML]="record.html"> -->
-        <!-- {{record.text}} -->
-        <!-- </mat-card-content> -->
-        <!-- <mat-card-actions align="end">
-            <ng-container *ngIf="record.audio">
-                <audio controls preload="none">
-                    <source [src]="record.blobUrl" type="audio/webm" />
-                    <a [href]="record.blobUrl">Download</a>
-                </audio>
-            </ng-container>
-        </mat-card-actions> -->
-    </mat-card>
-</ng-container>
+@for (record of records; track $index) {
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            {{record.kind}}
+        </mat-card-title>
+        <mat-card-subtitle>
+            {{record.start.toLocaleTimeString()}} - {{record.end.toLocaleTimeString()}}
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        @if (record.html) {
+        <div [innerHTML]="record.html">
+            {{record.text}}
+        </div>
+        }
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+        @if (record.audio) {
+        <audio controls preload="none">
+            <source [src]="record.blobUrl" type="audio/webm" />
+            <a [href]="record.blobUrl">Download</a>
+        </audio>
+        }
+    </mat-card-actions>
+</mat-card>
+}
