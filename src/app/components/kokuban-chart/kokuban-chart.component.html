@@ -9,7 +9,7 @@
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
-        @if (html) {
+        @if (html !== '') {
         <div [innerHTML]="html">
             <!-- {{text}} -->
         </div>

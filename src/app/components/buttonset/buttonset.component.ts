@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 
 import { ButtonComponent, ClickButton } from '../button/button.component';
-import { GeminiService } from '../../services/gemini.service';
-import { RecorderService, Event } from '../../services/recorder.service';
+import { Event } from '../../services/recorder.service';
 
 
 /** コンポーネント外部に送出するイベントの引数 */
@@ -21,10 +20,7 @@ export interface ClickButtonset {
   styleUrls: ['./buttonset.component.css']
 })
 export class ButtonsetComponent implements OnDestroy {
-  constructor(
-    // private geminiService: GeminiService,
-    // private recorderService: RecorderService
-  ) { }
+  constructor() { }
 
   @ViewChildren(ButtonComponent) buttons!: QueryList<ButtonComponent>;
 
@@ -62,8 +58,6 @@ export class ButtonsetComponent implements OnDestroy {
             event: 'END',
             time: now
           });
-
-          // this.recorderService.stopRecordAudio();
         }
       });
     }
@@ -73,12 +67,6 @@ export class ButtonsetComponent implements OnDestroy {
       event: event.state ? 'START' : 'END',
       time: now
     });
-
-    // if (event.state) {
-    //   this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
-    // } else {
-    //   this.recorderService.stopRecordAudio();
-    // }
   }
 
   /**
@@ -97,34 +85,5 @@ export class ButtonsetComponent implements OnDestroy {
         });
       }
     });
-
-    // this.recorderService.stopRecordAudio();
   }
-
-  // private async stopRecorderHandler(blob: Blob): Promise<void> {
-  //   let lastRecord;
-  //   for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
-  //     lastRecord = this.recorderService.records[i];
-  //     if (lastRecord.event === 'END') {
-  //       break;
-  //     }
-  //   }
-
-  //   let prompt = window.localStorage.getItem('PROMPT');
-  //   prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
-
-  //   const response = await this.geminiService.generateContent({
-  //     text: prompt
-  //   }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
-
-  //   console.log(response);
-
-  //   // const text = response.candidates[0].content.parts[0].text;
-  //   const text = response;
-
-  //   if (lastRecord) {
-  //     lastRecord.audio = blob;
-  //     lastRecord.text = text;
-  //   }
-  // }
 }

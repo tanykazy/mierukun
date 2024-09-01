@@ -76,8 +76,10 @@ export class AppComponent implements OnInit {
   }
 
   public onClickStartRecording(event: UIEvent): void {
-    console.log('start recording');
-    this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
+    if (this.recorderService.isAudioAvailable) {
+      console.log('start recording');
+      this.recorderService.startRecordAudio(this.stopRecorderHandler.bind(this));
+    }
   }
 
   public onClickStopRecording(event: UIEvent): void {
