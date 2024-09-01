@@ -13,14 +13,21 @@ import { RecorderService } from 'src/app/services/recorder.service'
 
 
 const DEFAULT_PROMPT = `あなたは、授業を分析し、より良い授業を実現するためのAIアシスタントです。
-これから入力される音声は、授業中の教師と生徒の発話です。
-観察者は、この時の教師の行動を<<button>>と記録しました。
-
+これから入力される音声データは、授業中の教師と生徒の発話です。
 この音声データを元に、以下の観点で分析し、具体的な行動に基づいたフィードバックを生成してください。
 
-* **発話内容の詳細**: 
-    * 教師は授業中、具体的にどのような言葉を発していますか？ 教師の発言を箇条書きで列挙してください。
-    * 各発言の意図は何か？（例：授業の導入、指示、説明、質問、励まし、評価など）`;
+# 授業の概要
+対象学年: <<grade>>
+教科: <<subject>>
+授業の目標: <<note>>
+
+# 観点
+授業の目標達成と教師の行動の関係
+
+# 発話内容の詳細 
+- 教師は授業中、具体的にどのような言葉を発していますか？ 教師の発言を箇条書きで列挙してください。
+- 各発言の意図は何か？（例：授業の導入、指示、説明、質問、励まし、評価など）
+`;
 
 @Component({
   selector: 'app-inputmore',
@@ -36,8 +43,10 @@ export class InputmoreComponent implements OnInit {
     this.prompt = window.localStorage.getItem('PROMPT') || DEFAULT_PROMPT;
     window.localStorage.setItem('PROMPT', this.prompt);
   }
-  grade!: MatOption;
+
+  grade!: string;
   subject!: string;
+  note!: string;
   recordeAudio: boolean = false;
   prompt: string;
 

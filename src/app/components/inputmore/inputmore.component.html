@@ -8,19 +8,19 @@
         <mat-form-field class="full-width-field">
             <mat-label>対象の学年</mat-label>
             <mat-select name="grade" [(ngModel)]="grade" (selectionChange)="onChangeGrade($event)">
-                <mat-option value="1">小1</mat-option>
-                <mat-option value="2">小2</mat-option>
-                <mat-option value="3">小3</mat-option>
-                <mat-option value="4">小4</mat-option>
-                <mat-option value="5">小5</mat-option>
-                <mat-option value="6">小6</mat-option>
-                <mat-option value="7">中1</mat-option>
-                <mat-option value="8">中2</mat-option>
-                <mat-option value="9">中3</mat-option>
-                <mat-option value="10">高1</mat-option>
-                <mat-option value="11">高2</mat-option>
-                <mat-option value="12">高3</mat-option>
-                <mat-option value="0">その他</mat-option>
+                <mat-option value="小学校1年生">小1</mat-option>
+                <mat-option value="小学校2年生">小2</mat-option>
+                <mat-option value="小学校3年生">小3</mat-option>
+                <mat-option value="小学校4年生">小4</mat-option>
+                <mat-option value="小学校5年生">小5</mat-option>
+                <mat-option value="小学校6年生">小6</mat-option>
+                <mat-option value="中学校1年生">中1</mat-option>
+                <mat-option value="中学校2年生">中2</mat-option>
+                <mat-option value="中学校3年生">中3</mat-option>
+                <mat-option value="高等学校1年生">高1</mat-option>
+                <mat-option value="高等学校2年生">高2</mat-option>
+                <mat-option value="高等学校3年生">高3</mat-option>
+                <mat-option value="その他">その他</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -30,8 +30,8 @@
         </mat-form-field>
 
         <mat-form-field class="full-width-field">
-            <mat-label>Note</mat-label>
-            <textarea matInput></textarea>
+            <mat-label>授業の目標</mat-label>
+            <textarea matInput [(ngModel)]="note"></textarea>
         </mat-form-field>
     </mat-card-content>
 </mat-card>

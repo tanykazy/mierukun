@@ -3,6 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { marked } from 'marked';
 
+import { InputmoreComponent } from './components/inputmore/inputmore.component';
 import { ButtonsetComponent, ClickButtonset } from './components/buttonset/buttonset.component';
 import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
 import { RecorderService } from './services/recorder.service';
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
     public recorderService: RecorderService
   ) { }
 
+  @ViewChild(InputmoreComponent) inputmoreComponent!: InputmoreComponent;
   @ViewChild(ButtonsetComponent) buttonsetComponent!: ButtonsetComponent;
   @ViewChild(KokubanChartComponent) kokubanChart!: KokubanChartComponent;
 
@@ -94,7 +96,9 @@ export class AppComponent implements OnInit {
     this.kokubanChart.blobUrl = window.URL.createObjectURL(blob);
 
     let prompt = window.localStorage.getItem('PROMPT') || '';
-    // prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
+    prompt = prompt.replaceAll(/<<button>>/gi, this.inputmoreComponent.grade || '') || '';
+    prompt = prompt.replaceAll(/<<subject>>/gi, this.inputmoreComponent.subject || '') || '';
+    prompt = prompt.replaceAll(/<<note>>/gi, this.inputmoreComponent.note || '') || '';
 
     // console.log('generateContent');
     const response = await this.geminiService.generateContent({
