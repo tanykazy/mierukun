@@ -8,7 +8,6 @@ import { marked } from 'marked';
 
 import { RecorderService, RecordView } from '../../services/recorder.service';
 import { SafeHtml } from '@angular/platform-browser';
-import { text } from 'express';
 
 
 declare const google: any;
@@ -48,6 +47,11 @@ export class KokubanChartComponent implements OnChanges {
   private dataTable = new Map<string, number>();
   private chartDataTable: any;
   private chart: any;
+
+  @Input() audio: Blob | null = null;
+  @Input() text: string = '';
+  @Input() blobUrl: string = '';
+  @Input() html: SafeHtml = '';
 
   @Input() set data(data: Map<string, number>) {
     if (data) {

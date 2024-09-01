@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
+import { marked } from 'marked';
+
 import { ClickButtonset } from './components/buttonset/buttonset.component';
 import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
 import { RecorderService } from './services/recorder.service';
@@ -104,12 +106,17 @@ export class AppComponent implements OnInit {
     // const text = response.candidates[0].content.parts[0].text;
     const text = response;
 
-    this.kokubanChart.summary = {
-      audio: blob,
-      text: text,
-      blobUrl: window.URL.createObjectURL(blob),
-      html: ''
-    };
+
+    this.kokubanChart.audio = blob;
+    this.kokubanChart.text = text;
+    this.kokubanChart.blobUrl = window.URL.createObjectURL(blob);
+    this.kokubanChart.html = await marked(text);
+    // this.kokubanChart.summary = {
+    //   audio: blob,
+    //   text: text,
+    //   blobUrl: window.URL.createObjectURL(blob),
+    //   html: ''
+    // };
 
     // await this.kokubanChart.setSummary(blob, text);
     // this.recorderService.setSummary(blob, text);

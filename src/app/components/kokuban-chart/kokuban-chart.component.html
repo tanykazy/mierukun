@@ -9,15 +9,17 @@
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
-        <div [innerHTML]="summary.html">
-            <!-- {{record.text}} -->
+        <div [innerHTML]="html">
+            <!-- {{text}} -->
         </div>
+        @if (audio) {
         <div>
             <audio controls preload="none">
-                <source [src]="summary.blobUrl" type="audio/webm" />
-                <a [href]="summary.blobUrl">Download</a>
+                <source [src]="blobUrl" type="audio/webm" />
+                <a [href]="blobUrl">Download</a>
             </audio>
         </div>
+        }
     </mat-card-content>
     <mat-card-actions align="end">
         <button mat-icon-button [disabled]="!isDrawn" [matMenuTriggerFor]="menu">
