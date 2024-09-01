@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="card">
     <mat-card-header>
         <mat-card-title>
         </mat-card-title>
@@ -6,7 +6,7 @@
         </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-        @if (dataTable.size > 0) {
+        @if (isDrawn) {
         <div id="chart-container">
             <div #chart_aria id="chart-aria"></div>
         </div>
@@ -50,7 +50,7 @@
 </mat-card>
 
 @for (record of records; track $index) {
-<mat-card>
+<mat-card class="card">
     <mat-card-header>
         <mat-card-title>
             {{record.kind}}

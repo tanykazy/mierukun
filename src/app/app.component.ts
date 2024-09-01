@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { marked } from 'marked';
 
-import { ClickButtonset } from './components/buttonset/buttonset.component';
+import { ButtonsetComponent, ClickButtonset } from './components/buttonset/buttonset.component';
 import { KokubanChartComponent } from './components/kokuban-chart/kokuban-chart.component';
 import { RecorderService } from './services/recorder.service';
 import { GeminiService } from './services/gemini.service';
@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     public recorderService: RecorderService
   ) { }
 
+  @ViewChild(ButtonsetComponent) buttonsetComponent!: ButtonsetComponent;
   @ViewChild(KokubanChartComponent) kokubanChart!: KokubanChartComponent;
 
   ngOnInit(): void {
@@ -83,53 +84,29 @@ export class AppComponent implements OnInit {
   }
 
   public onClickStopRecording(event: UIEvent): void {
+    this.buttonsetComponent.deactiveAll();
     console.log('stop recording');
     this.recorderService.stopRecordAudio();
   }
 
   private async stopRecorderHandler(blob: Blob): Promise<void> {
-    // let lastRecord;
-    // for (let i = this.recorderService.records.length - 1; i >= 0; i--) {
-    //   lastRecord = this.recorderService.records[i];
-    //   if (lastRecord.event === 'END') {
-    //     break;
-    //   }
-    // }
-
     this.kokubanChart.audio = blob;
     this.kokubanChart.blobUrl = window.URL.createObjectURL(blob);
 
     let prompt = window.localStorage.getItem('PROMPT') || '';
     // prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
 
-    console.log('generateContent');
+    // console.log('generateContent');
     const response = await this.geminiService.generateContent({
       text: prompt
     }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
 
-    // console.log(response);
-
-    // const text = response.candidates[0].content.parts[0].text;
     const text = response;
 
     this.kokubanChart.text = text;
     console.log(this.kokubanChart.text);
     this.kokubanChart.html = await marked(text);
     console.log(this.kokubanChart.html);
-    // this.kokubanChart.summary = {
-    //   audio: blob,
-    //   text: text,
-    //   blobUrl: window.URL.createObjectURL(blob),
-    //   html: ''
-    // };
-
-    // await this.kokubanChart.setSummary(blob, text);
-    // this.recorderService.setSummary(blob, text);
-
-    // if (lastRecord) {
-    //   lastRecord.audio = blob;
-    //   lastRecord.text = text;
-    // }
   }
 
   /**
