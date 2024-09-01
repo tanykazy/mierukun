@@ -102,6 +102,7 @@ export class AppComponent implements OnInit {
     let prompt = window.localStorage.getItem('PROMPT') || '';
     // prompt = prompt?.replaceAll(/<<button>>/gi, lastRecord?.kind || '') || '';
 
+    console.log('generateContent');
     const response = await this.geminiService.generateContent({
       text: prompt
     }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
@@ -112,7 +113,9 @@ export class AppComponent implements OnInit {
     const text = response;
 
     this.kokubanChart.text = text;
+    console.log(this.kokubanChart.text);
     this.kokubanChart.html = await marked(text);
+    console.log(this.kokubanChart.html);
     // this.kokubanChart.summary = {
     //   audio: blob,
     //   text: text,
