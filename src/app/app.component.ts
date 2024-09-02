@@ -130,4 +130,12 @@ export class AppComponent implements OnInit {
     // Safari, Chrome, and other WebKit-derived browsers
     return confirmationMessage;
   }
+
+  public onChangeFile(event: Event): void {
+    console.log(event);
+    console.log((event.target as HTMLInputElement).files);
+    const blob = (event.target as HTMLInputElement).files?.item(0);
+
+    this.stopRecorderHandler(blob as Blob);
+  }
 }

@@ -58,6 +58,11 @@
       </mat-step>
 
     </mat-stepper>
+
+    @if (!recorderService.isAudioAvailable) {
+    <input placeholder="For Debug" type="file" accept="audio/*" (change)="onChangeFile($event)" />
+    }
+
   </mat-sidenav-content>
 </mat-sidenav-container>
 

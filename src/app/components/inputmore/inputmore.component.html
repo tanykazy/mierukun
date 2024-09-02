@@ -81,13 +81,15 @@
             <mat-label>プロンプト</mat-label>
             <textarea matInput placeholder="プロンプトを入力する" (input)="onInputPrompt($event)" [(ngModel)]="prompt"></textarea>
             <mat-hint>
-                &lt;&lt;button&gt;&gt; がボタンの名前として扱われます。
+                &lt;&lt;grade&gt;&gt;
+                &lt;&lt;subject&gt;&gt;
+                &lt;&lt;note&gt;&gt;
             </mat-hint>
         </mat-form-field>
     </mat-card-content>
 
     <mat-card-actions align="end">
-        <mat-slide-toggle [checked]="recordeAudio" labelPosition="before" (change)="onChangeRecordAudio($event)">
+        <mat-slide-toggle [(ngModel)]="recordeAudio" labelPosition="before" (change)="onChangeRecordAudio($event)">
             録音
         </mat-slide-toggle>
     </mat-card-actions>

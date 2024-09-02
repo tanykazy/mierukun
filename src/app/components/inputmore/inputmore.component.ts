@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatOption } from '@angular/material/core';
 import { MatSelectChange } from '@angular/material/select';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -122,8 +121,10 @@ export class InputmoreComponent implements OnInit {
   onChangeRecordAudio(event: MatSlideToggleChange): void {
     if (event.checked) {
       this.recorderService.enableAudio();
+      // this.recordeAudio = true;
     } else {
       this.recorderService.disableAudio();
+      // this.recordeAudio = false;
     }
   }
 
