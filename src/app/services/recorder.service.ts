@@ -58,6 +58,10 @@ export class RecorderService {
 
   public isAudioAvailable: boolean;
   public stream: MediaStream | undefined;
+  private options = {
+    mimeType: 'audio/webm',
+    audioBitsPerSecond: '64000',
+  };
   private mediaRecorder!: MediaRecorder;
   private chunks!: Array<Blob>;
 

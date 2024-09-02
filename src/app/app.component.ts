@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
     // console.log('generateContent');
     const response = await this.geminiService.generateContent({
       text: prompt
-    }, await this.geminiService.blobToGenerativePart(blob, 'audio/mpeg'));
+    }, await this.geminiService.blobToGenerativePart(blob, 'audio/webm'));
 
     const text = response;
 
