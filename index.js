@@ -3,7 +3,7 @@ var app = express();
 
 app.use(express.static("dist/mierukun"));
 app.use(express.json({
-    limit: '100mb'
+    limit: '500mb'
 }));
 // app.use(express.urlencoded({
 //     limit: '100mb',
